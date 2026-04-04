@@ -737,4 +737,22 @@ function animateCounter(el,target,dur=1800){
 }
 const cObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){
-    animateCounter(e.target,parseInt(e.
+    animateCounter(e.target,parseInt(e.target.dataset.target));
+    cObs.unobserve(e.target);
+  }});
+},{threshold:.1,rootMargin:'0px 0px 50px 0px'});
+document.querySelectorAll('.counter').forEach(el=>cObs.observe(el));
+
+/* Fallback: if counters still show 0 after 3s, force-run */
+setTimeout(()=>{
+  document.querySelectorAll('.counter').forEach(el=>{
+    if(el.textContent==='0'){
+      animateCounter(el,parseInt(el.dataset.target));
+    }
+  });
+},3000);
+
+if('ontouchstart' in window)glow.style.display='none';
+</script>
+</body>
+</html>
