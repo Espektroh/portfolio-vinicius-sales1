@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinicius Sales de Souza — Currículo</title>
+<meta name="description" content="Currículo profissional de Vinicius Sales — Analista de Dados, BI e Automação. Sorocaba, SP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B14;--bg2:#0C1220;--bg3:#111827;
+  --cyan:#00E5FF;--purple:#8B5CF6;--green:#10B981;--amber:#F59E0B;
+  --text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;
+  --border:rgba(255,255,255,.06);
+  --fd:'Bricolage Grotesque',sans-serif;
+  --fb:'Plus Jakarta Sans',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cyan);color:var(--bg)}
+
+nav{position:sticky;top:0;z-index:100;padding:0 clamp(1.5rem,5vw,4rem);height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,11,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.n-logo{font-family:var(--fd);font-size:1.15rem;font-weight:800;letter-spacing:-.02em}
+.n-logo span{color:var(--cyan)}
+.n-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:600;
+  color:var(--cyan);padding:.5rem 1rem;border:1px solid rgba(0,229,255,.25);border-radius:6px;transition:all .2s}
+.n-back:hover{background:rgba(0,229,255,.08)}
+
+.cv-wrap{max-width:800px;margin:0 auto;padding:3rem clamp(1.5rem,5vw,2rem) 5rem}
+
+.cv-header{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.cv-name{font-family:var(--fd);font-size:clamp(2rem,5vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.5rem}
+.cv-name span{color:var(--cyan)}
+.cv-role{font-size:1.1rem;color:var(--text2);margin-bottom:1.25rem;font-family:var(--fm);font-weight:400}
+.cv-contacts{display:flex;flex-wrap:wrap;gap:1.25rem}
+.cv-contact{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text2)}
+.cv-contact .icon{font-size:.9rem}
+.cv-contact a{color:var(--cyan);transition:opacity .2s}
+.cv-contact a:hover{opacity:.8}
+
+.cv-section{margin-bottom:2.5rem}
+.cv-section-title{font-family:var(--fd);font-size:.72rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:.75rem}
+.cv-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.cv-item{position:relative;padding-left:1.5rem;margin-bottom:1.75rem}
+.cv-item::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;
+  border-radius:50%;background:var(--cyan)}
+.cv-item-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.35rem}
+.cv-item-title{font-size:1rem;font-weight:700;color:var(--text)}
+.cv-item-period{font-size:.75rem;color:var(--text3);font-family:var(--fm)}
+.cv-item-company{font-size:.88rem;color:var(--text2);margin-bottom:.5rem}
+.cv-item-desc{font-size:.85rem;color:var(--text2);line-height:1.75}
+.cv-item-desc li{margin-bottom:.35rem;list-style:none;position:relative;padding-left:1rem}
+.cv-item-desc li::before{content:'—';position:absolute;left:0;color:var(--text3)}
+
+.cv-skills{display:flex;flex-wrap:wrap;gap:.5rem}
+.cv-skill{padding:.35rem .8rem;border-radius:999px;font-size:.75rem;font-weight:600;
+  border:1px solid var(--border);color:var(--text2);transition:all .15s}
+.cv-skill:hover{border-color:var(--cyan);color:var(--cyan)}
+.cv-skill.primary{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.25);color:var(--cyan)}
+
+.cv-projects{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.cv-project{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:1.25rem;transition:border-color .2s}
+.cv-project:hover{border-color:rgba(0,229,255,.15)}
+.cv-project-name{font-size:.88rem;font-weight:700;margin-bottom:.35rem}
+.cv-project-desc{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:.5rem}
+.cv-project-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.cv-project-tag{font-size:.65rem;padding:.2rem .5rem;border-radius:999px;
+  background:rgba(139,92,246,.08);color:var(--purple);font-weight:600}
+
+.cv-cta{text-align:center;padding:2.5rem;margin-top:2rem;background:var(--bg2);
+  border:1px solid var(--border);border-radius:20px}
+.cv-cta-title{font-family:var(--fd);font-size:1.25rem;font-weight:700;margin-bottom:.5rem}
+.cv-cta-desc{font-size:.88rem;color:var(--text2);margin-bottom:1.25rem}
+.cv-cta-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;
+  border-radius:8px;font-weight:700;font-size:.88rem;
+  background:linear-gradient(135deg,var(--cyan),#00B8D4);color:var(--bg);transition:all .2s}
+.cv-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,255,.3)}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:.78rem;color:var(--text3)}
+footer a{color:var(--text2);transition:color .2s}
+footer a:hover{color:var(--cyan)}
+
+@media(max-width:600px){
+  .cv-contacts{flex-direction:column;gap:.75rem}
+  .cv-projects{grid-template-columns:1fr}
+  .cv-item-head{flex-direction:column;gap:.2rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="n-logo">VS<span>.</span></a>
+  <a href="index.html" class="n-back">← Ver projetos e serviços</a>
+</nav>
+
+<div class="cv-wrap">
+
+  <!-- HEADER -->
+  <header class="cv-header">
+    <h1 class="cv-name">Vinicius <span>Sales</span> de Souza</h1>
+    <p class="cv-role">// Analista de Dados · BI · Sales Operations · Automação</p>
+    <div class="cv-contacts">
+      <div class="cv-contact"><span class="icon">📍</span> Sorocaba, SP</div>
+      <div class="cv-contact"><span class="icon">📱</span> <a href="tel:+5515996784892">(15) 99678-4892</a></div>
+      <div class="cv-contact"><span class="icon">✉️</span> <a href="mailto:viniciussouza7102@gmail.com">viniciussouza7102@gmail.com</a></div>
+      <div class="cv-contact"><span class="icon">🔗</span> <a href="https://www.linkedin.com/in/vinicius-sales-7a0379238/" target="_blank">LinkedIn</a></div>
+      <div class="cv-contact"><span class="icon">🐙</span> <a href="https://github.com/Espektroh" target="_blank">GitHub</a></div>
+    </div>
+  </header>
+
+  <!-- RESUMO -->
+  <section class="cv-section">
+    <div class="cv-section-title">Resumo Profissional</div>
+    <p style="font-size:.9rem;color:var(--text2);line-height:1.8">
+      Profissional com forte viés analítico especializado em Business Intelligence, engenharia de dados e Sales Operations. Experiência comprovada na construção de pipelines ETL completos (Odoo → Python → PostgreSQL → Power BI), dashboards executivos com DAX avançado e automação de processos comerciais. Promovido internamente para a matriz por entregar soluções de dados que geraram visibilidade real do funil de vendas para a diretoria. Autodidata em Python, SQL e ferramentas de automação com IA.
+    </p>
+  </section>
+
+  <!-- EXPERIÊNCIA -->
+  <section class="cv-section">
+    <div class="cv-section-title">Experiência Profissional</div>
+
+    <div class="cv-item">
+      <div class="cv-item-head">
+        <div class="cv-item-title">Assistente Comercial Sênior — BI & CRM</div>
+        <div class="cv-item-period">Mai/2025 – Atual</div>
+      </div>
+      <div class="cv-item-company">Berbel Vigilância e Segurança Patrimonial · Sorocaba, SP</div>
+      <div class="cv-item-desc">
+        <ul>
+          <li>Gestão de pipeline comercial de R$ 11M+ com 700+ oportunidades ativas no CRM Odoo</li>
+          <li>Desenvolvimento de dashboards executivos em Power BI com HTML Content visual, DAX avançado e views PostgreSQL</li>
+          <li>Construção e manutenção do pipeline ETL completo: Odoo (XML-RPC API) → Python → PostgreSQL → Power BI com atualização automática diária</li>
+          <li>Sincronização automatizada de 561 tabelas com paginação de 1.000 registros e SSL enterprise</li>
+          <li>Criação de dashboards HTML interativos para funil de serviços, frota, contabilidade e indicadores de ligações</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cv-item">
+      <div class="cv-item-head">
+        <div class="cv-item-title">Assistente Comercial — BI & CRM</div>
+        <div class="cv-item-period">Jan/2025 – Mai/2025</div>
+      </div>
+      <div class="cv-item-company">Bunker Segurança (Grupo Berbel) · Sorocaba, SP</div>
+      <div class="cv-item-desc">
+        <ul>
+          <li>Desenvolvimento inicial da infraestrutura de dados que motivou a promoção para a matriz</li>
+          <li>Automação de processos manuais de backup e consolidação de dados comerciais</li>
+          <li>Suporte ao time comercial com análises de pipeline e relatórios ad-hoc</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cv-item">
+      <div class="cv-item-head">
+        <div class="cv-item-title">Projetos Freelance — Dados & Web</div>
+        <div class="cv-item-period">2024 – Atual</div>
+      </div>
+      <div class="cv-item-company">Autônomo · Sorocaba, SP</div>
+      <div class="cv-item-desc">
+        <ul>
+          <li>Dashboards Power BI e pipelines de dados para PMEs da região</li>
+          <li>Landing pages de alta conversão para negócios locais (SOS Serviços, Ateliê dos Barbeiros)</li>
+          <li>Automações de prospecção via WhatsApp com n8n, WAHA e agentes de IA</li>
+          <li>Desenvolvimento de SaaS (ContentAI — React + Supabase + Gemini API)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMAÇÃO -->
+  <section class="cv-section">
+    <div class="cv-section-title">Formação</div>
+    <div class="cv-item">
+      <div class="cv-item-head">
+        <div class="cv-item-title">Técnico em Logística</div>
+        <div class="cv-item-period">2015 – 2018</div>
+      </div>
+      <div class="cv-item-company">E.T.E.C. Cerquilho · Cerquilho, SP</div>
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section class="cv-section">
+    <div class="cv-section-title">Habilidades Técnicas</div>
+    <div class="cv-skills">
+      <span class="cv-skill primary">Power BI</span>
+      <span class="cv-skill primary">DAX</span>
+      <span class="cv-skill primary">Python</span>
+      <span class="cv-skill primary">PostgreSQL</span>
+      <span class="cv-skill primary">ETL</span>
+      <span class="cv-skill primary">SQL</span>
+      <span class="cv-skill">Power Query</span>
+      <span class="cv-skill">Odoo (Studio & API)</span>
+      <span class="cv-skill">XML-RPC / JSON-RPC</span>
+      <span class="cv-skill">React / Next.js</span>
+      <span class="cv-skill">HTML & CSS</span>
+      <span class="cv-skill">FastAPI</span>
+      <span class="cv-skill">Docker</span>
+      <span class="cv-skill">Supabase</span>
+      <span class="cv-skill">n8n / Make</span>
+      <span class="cv-skill">Git & GitHub</span>
+      <span class="cv-skill">Excel Avançado</span>
+      <span class="cv-skill">Vercel</span>
+      <span class="cv-skill">Task Scheduler</span>
+      <span class="cv-skill">Gemini / OpenAI API</span>
+    </div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section class="cv-section">
+    <div class="cv-section-title">Projetos em Destaque</div>
+    <div class="cv-projects">
+      <div class="cv-project">
+        <div class="cv-project-name">Pipeline ETL Odoo → Power BI</div>
+        <div class="cv-project-desc">Automação completa sincronizando 561 tabelas via API com atualização diária às 06:00. Eliminou 100% do trabalho manual de dados.</div>
+        <div class="cv-project-tags"><span class="cv-project-tag">Python</span><span class="cv-project-tag">PostgreSQL</span><span class="cv-project-tag">Power BI</span></div>
+      </div>
+      <div class="cv-project">
+        <div class="cv-project-name">Dashboard BI Gerencial</div>
+        <div class="cv-project-desc">Dashboard financeiro com DRE, Fluxo de Caixa, Comparativo Mensal e controle de Inadimplência com filtros dinâmicos.</div>
+        <div class="cv-project-tags"><span class="cv-project-tag">Power BI</span><span class="cv-project-tag">DAX</span><span class="cv-project-tag">HTML</span></div>
+      </div>
+      <div class="cv-project">
+        <div class="cv-project-name">ContentAI (SaaS)</div>
+        <div class="cv-project-desc">Plataforma SaaS de marketing com IA. React + Supabase + Stripe + Gemini API com planos tiered e Meta Conversions API.</div>
+        <div class="cv-project-tags"><span class="cv-project-tag">React</span><span class="cv-project-tag">Supabase</span><span class="cv-project-tag">Stripe</span></div>
+      </div>
+      <div class="cv-project">
+        <div class="cv-project-name">Automação WhatsApp + IA</div>
+        <div class="cv-project-desc">Sistema de prospecção outbound automatizado com n8n, WAHA e agente de vendas com IA para qualificação de leads.</div>
+        <div class="cv-project-tags"><span class="cv-project-tag">n8n</span><span class="cv-project-tag">Docker</span><span class="cv-project-tag">IA</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cv-cta">
+    <div class="cv-cta-title">Quer ver esses projetos ao vivo?</div>
+    <div class="cv-cta-desc">Acesse meu portfólio com dashboards interativos, cases detalhados e serviços disponíveis.</div>
+    <a href="index.html" class="cv-cta-btn">Ver portfólio completo →</a>
+  </div>
+
+</div>
+
+<footer>
+  <p><a href="index.html">Portfólio</a> · <a href="https://www.linkedin.com/in/vinicius-sales-7a0379238/" target="_blank">LinkedIn</a> · <a href="https://github.com/Espektroh" target="_blank">GitHub</a></p>
+</footer>
+
+</body>
+</html>

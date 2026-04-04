@@ -1,1342 +1,740 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vinicius Sales de Souza — Analista de Dados & Sales Operations</title>
-  <meta name="description" content="Portfólio de Vinicius Sales — Especialista em Power BI, Python, ETL e Sales Operations. Sorocaba, SP." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <style>
-    /* ===========================
-       TOKENS & RESET
-    =========================== */
-    :root {
-      --ink:       #0d1117;
-      --ink-soft:  #1c2230;
-      --surface:   #ffffff;
-      --muted:     #f4f6f9;
-      --border:    #e2e8f0;
-      --accent:    #1a56ff;
-      --accent-2:  #00c6a7;
-      --accent-3:  #ff4d6d;
-      --text:      #1e293b;
-      --text-muted:#64748b;
-      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Sora', sans-serif;
-      background: var(--surface);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    img { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-
-    /* ===========================
-       NAV
-    =========================== */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 clamp(1.5rem, 5vw, 4rem);
-      height: 64px;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.3s;
-    }
-    nav.scrolled { box-shadow: 0 4px 32px rgba(0,0,0,0.07); }
-
-    .nav-logo {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--accent);
-      position: relative;
-    }
-    .nav-logo::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform 0.3s var(--ease-expo);
-    }
-    .nav-logo:hover::after { transform: scaleX(1); }
-
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      transition: color 0.2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent);
-      border-radius: 1px;
-      transform: scaleX(0);
-      transition: transform 0.3s var(--ease-expo);
-      transform-origin: left;
-    }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-links a:hover::after { transform: scaleX(1); }
-
-    /* ===========================
-       HERO
-    =========================== */
-    .hero {
-      min-height: 100vh;
-      padding: 100px clamp(1.5rem, 5vw, 4rem) 80px;
-      background: var(--ink);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-
-    /* Grid overlay */
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(26,86,255,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(26,86,255,0.06) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-
-    /* Glow blobs */
-    .hero-blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      animation: blobFloat 8s ease-in-out infinite;
-    }
-    .hero-blob-1 {
-      width: 500px; height: 500px;
-      background: rgba(26,86,255,0.18);
-      top: -100px; right: -80px;
-    }
-    .hero-blob-2 {
-      width: 350px; height: 350px;
-      background: rgba(0,198,167,0.12);
-      bottom: 50px; right: 200px;
-      animation-delay: -3s;
-    }
-    .hero-blob-3 {
-      width: 250px; height: 250px;
-      background: rgba(255,77,109,0.08);
-      bottom: -60px; left: 20%;
-      animation-delay: -6s;
-    }
-
-    @keyframes blobFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50%       { transform: translateY(-30px) scale(1.05); }
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1rem;
-      border: 1px solid rgba(0,198,167,0.4);
-      border-radius: 999px;
-      background: rgba(0,198,167,0.08);
-      color: var(--accent-2);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--accent-2);
-      border-radius: 50%;
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    .hero h1 {
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      color: #ffffff;
-      margin-bottom: 0.4rem;
-    }
-    .hero h1 span { color: var(--accent); }
-
-    .hero-role {
-      font-size: clamp(1rem, 1.8vw, 1.25rem);
-      font-weight: 400;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 1.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: -0.01em;
-    }
-
-    .hero-desc {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.75;
-      max-width: 480px;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.85rem 1.75rem;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: transform 0.2s var(--ease-back), box-shadow 0.2s;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(26,86,255,0.4);
-    }
-
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.85rem 1.75rem;
-      background: transparent;
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
-    }
-    .btn-ghost:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.4);
-      color: #fff;
-    }
-
-    /* Stats card */
-    .hero-stats {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 2.5rem;
-      backdrop-filter: blur(8px);
-      display: flex;
-      flex-direction: column;
-      gap: 1.75rem;
-    }
-
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
-
-    .stat-icon {
-      width: 52px; height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-    .stat-icon.blue { background: rgba(26,86,255,0.2); }
-    .stat-icon.teal { background: rgba(0,198,167,0.2); }
-    .stat-icon.rose { background: rgba(255,77,109,0.2); }
-
-    .stat-value {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.45);
-      margin-top: 0.2rem;
-    }
-
-    /* Animated counter */
-    .counter { display: inline-block; }
-
-    /* ===========================
-       SECTIONS COMMON
-    =========================== */
-    section { padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem); }
-
-    .section-inner { max-width: 1100px; margin: 0 auto; }
-
-    .section-tag {
-      display: inline-block;
-      padding: 0.3rem 0.9rem;
-      background: rgba(26,86,255,0.07);
-      color: var(--accent);
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--ink);
-      margin-bottom: 0.75rem;
-    }
-
-    .section-sub {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 560px;
-      line-height: 1.7;
-    }
-
-    /* Scroll reveal */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-left {
-      opacity: 0;
-      transform: translateX(-32px);
-      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
-    }
-    .reveal-left.visible { opacity: 1; transform: translateX(0); }
-
-    /* ===========================
-       SOBRE
-    =========================== */
-    #sobre { background: var(--muted); }
-
-    .sobre-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-      margin-top: 3rem;
-    }
-
-    .sobre-text p {
-      color: var(--text);
-      line-height: 1.8;
-      margin-bottom: 1.1rem;
-    }
-    .sobre-text strong { color: var(--ink); }
-
-    .info-cards { display: flex; flex-direction: column; gap: 1rem; }
-
-    .info-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.5rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.25s var(--ease-back), box-shadow 0.25s;
-    }
-    .info-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--accent);
-      border-radius: 0 2px 2px 0;
-    }
-    .info-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-    }
-    .info-card h3 {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.6rem;
-    }
-    .info-card p { color: var(--ink); font-weight: 600; font-size: 0.95rem; }
-    .info-card span { color: var(--text-muted); font-size: 0.85rem; font-weight: 400; }
-
-    /* ===========================
-       PROJETOS
-    =========================== */
-    #projetos { background: var(--surface); }
-
-    .projects-header {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 3.5rem;
-    }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.25s var(--ease-back), box-shadow 0.25s, border-color 0.25s;
-      cursor: default;
-    }
-    .project-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(26,86,255,0.03) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .project-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.08);
-      border-color: rgba(26,86,255,0.2);
-    }
-
-    .project-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .project-icon {
-      width: 48px; height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    .project-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--ink);
-      letter-spacing: -0.01em;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .tag {
-      padding: 0.25rem 0.65rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    .project-body { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
-
-    .project-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .metric {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .metric::before { content: '↗'; font-size: 0.65rem; }
-
-    /* Section: SaaS & Freelance */
-    .saas-card {
-      background: var(--ink);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 2rem;
-      transition: transform 0.25s var(--ease-back), border-color 0.25s;
-    }
-    .saas-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(26,86,255,0.4);
-    }
-    .saas-card .project-title { color: #fff; }
-    .saas-card .project-body { color: rgba(255,255,255,0.55); }
-    .saas-card .project-metrics { border-color: rgba(255,255,255,0.08); }
-    .saas-card .metric { color: var(--accent-2); }
-
-    /* ===========================
-       HABILIDADES
-    =========================== */
-    #habilidades { background: var(--muted); }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-top: 3rem;
-    }
-
-    .skill-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      transition: transform 0.2s var(--ease-back), box-shadow 0.2s;
-    }
-    .skill-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    }
-
-    .skill-card-head {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .skill-emoji { font-size: 1.4rem; }
-    .skill-card-head h3 {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--ink);
-    }
-
-    .skill-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-    .skill-list li {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .skill-list li::before {
-      content: '';
-      width: 5px; height: 5px;
-      background: var(--accent);
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    /* ===========================
-       CONTATO
-    =========================== */
-    #contato {
-      background: var(--ink);
-      position: relative;
-      overflow: hidden;
-    }
-    #contato::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(26,86,255,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(26,86,255,0.06) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-
-    .contato-inner {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .contato-inner .section-title { color: #fff; }
-    .contato-inner .section-sub { color: rgba(255,255,255,0.5); margin: 0 auto 3rem; }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .contact-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-back);
-    }
-    .contact-card:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(26,86,255,0.4);
-      transform: translateY(-2px);
-    }
-    .contact-icon { font-size: 1.5rem; }
-    .contact-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 0.1rem; }
-    .contact-value { font-size: 0.9rem; font-weight: 600; color: #fff; }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .social-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 10px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      transition: transform 0.2s var(--ease-back), box-shadow 0.2s;
-    }
-    .social-btn.primary {
-      background: #fff;
-      color: var(--accent);
-    }
-    .social-btn.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(255,255,255,0.15);
-    }
-    .social-btn.secondary {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-    .social-btn.secondary:hover {
-      background: rgba(255,255,255,0.13);
-      transform: translateY(-2px);
-    }
-
-    .location-tag {
-      margin-top: 2.5rem;
-      color: rgba(255,255,255,0.35);
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-    }
-
-    /* ===========================
-       FOOTER
-    =========================== */
-    footer {
-      background: #060a10;
-      color: rgba(255,255,255,0.3);
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.82rem;
-    }
-    footer span { color: rgba(255,255,255,0.5); }
-
-    /* ===========================
-       MOBILE
-    =========================== */
-    @media (max-width: 768px) {
-      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-      .stat-item { flex-direction: column; text-align: center; gap: 0.5rem; }
-      .sobre-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .reveal, .reveal-left { transition: none; opacity: 1; transform: none; }
-      .hero-blob { animation: none; }
-      .hero-badge .dot { animation: none; }
-    }
-
-    /* ===========================
-       SECTION DIVIDER
-    =========================== */
-    .section-divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border), transparent);
-      margin: 0 clamp(1.5rem, 5vw, 4rem);
-    }
-
-    /* Highlight text */
-    .highlight { color: var(--accent); }
-    .highlight-2 { color: var(--accent-2); }
-
-    /* Inline code style */
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85em;
-      background: rgba(26,86,255,0.08);
-      color: var(--accent);
-      padding: 0.1em 0.4em;
-      border-radius: 4px;
-    }
-
-    /* Stagger delays for children */
-    .stagger > *:nth-child(1) { transition-delay: 0.05s; }
-    .stagger > *:nth-child(2) { transition-delay: 0.12s; }
-    .stagger > *:nth-child(3) { transition-delay: 0.19s; }
-    .stagger > *:nth-child(4) { transition-delay: 0.26s; }
-    .stagger > *:nth-child(5) { transition-delay: 0.33s; }
-    .stagger > *:nth-child(6) { transition-delay: 0.40s; }
-
-    /* Dark theme for SaaS section bg */
-    .dark-section { background: var(--ink); }
-    .dark-section .section-title { color: #fff; }
-    .dark-section .section-sub { color: rgba(255,255,255,0.5); }
-    .dark-section .section-tag { background: rgba(0,198,167,0.1); color: var(--accent-2); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinicius Sales — Consultoria de Dados & Automação</title>
+<meta name="description" content="Dashboards, automações e pipelines de dados para PMEs que querem parar de decidir no escuro. Sorocaba, SP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#070B14;--bg2:#0C1220;--bg3:#111827;--bg4:#1E293B;
+  --cyan:#00E5FF;--cyan2:#00B8D4;--cyan-g:rgba(0,229,255,.08);
+  --purple:#8B5CF6;--purple-g:rgba(139,92,246,.08);
+  --green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;
+  --border:rgba(255,255,255,.06);
+  --fd:'Bricolage Grotesque',sans-serif;
+  --fb:'Plus Jakarta Sans',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-b:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--cyan);color:var(--bg)}
+
+/* === GLOW CURSOR === */
+.glow{position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(0,229,255,.06) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .4s}
+
+/* === NAV === */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 clamp(1.5rem,5vw,4rem);height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,11,20,.6);backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:1px solid var(--border);transition:all .4s}
+nav.scrolled{height:60px;background:rgba(7,11,20,.9)}
+.n-logo{font-family:var(--fd);font-size:1.25rem;font-weight:800;letter-spacing:-.02em}
+.n-logo span{color:var(--cyan)}
+.n-links{display:flex;gap:2.5rem;list-style:none}
+.n-links a{font-size:.85rem;font-weight:500;color:var(--text3);transition:color .2s}
+.n-links a:hover{color:var(--cyan)}
+.n-cta{padding:.6rem 1.4rem;border:1px solid var(--cyan);color:var(--cyan);border-radius:6px;
+  font-size:.8rem;font-weight:600;letter-spacing:.02em;transition:all .25s var(--ease-b)}
+.n-cta:hover{background:var(--cyan);color:var(--bg);transform:translateY(-1px);box-shadow:0 0 24px rgba(0,229,255,.3)}
+
+/* === HERO === */
+.hero{min-height:100vh;padding:140px clamp(1.5rem,5vw,4rem) 100px;position:relative;overflow:hidden;
+  display:flex;align-items:center}
+.hero-grid-bg{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none}
+.hero-gradient{position:absolute;top:-200px;right:-200px;width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,255,.08) 0%,rgba(139,92,246,.04) 40%,transparent 70%);
+  pointer-events:none;animation:heroFloat 12s ease-in-out infinite}
+.hero-gradient-2{position:absolute;bottom:-100px;left:-100px;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,92,246,.06) 0%,transparent 60%);pointer-events:none;
+  animation:heroFloat 10s ease-in-out infinite reverse}
+@keyframes heroFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,-30px) scale(1.05)}}
+
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:2}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem 1rem;
+  border:1px solid rgba(0,229,255,.25);border-radius:999px;
+  background:rgba(0,229,255,.05);color:var(--cyan);
+  font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2rem}
+.hero-tag .pulse{width:6px;height:6px;background:var(--cyan);border-radius:50%;
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+.hero h1{font-family:var(--fd);font-size:clamp(3rem,6vw,5.5rem);font-weight:800;
+  letter-spacing:-.04em;line-height:1.05;margin-bottom:1.5rem;max-width:900px}
+.hero h1 .accent{background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text2);max-width:560px;
+  line-height:1.75;margin-bottom:3rem}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
+
+.btn-main{display:inline-flex;align-items:center;gap:.6rem;
+  padding:.9rem 2rem;border-radius:8px;font-weight:700;font-size:.9rem;
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:var(--bg);
+  transition:all .25s var(--ease-b);position:relative;overflow:hidden}
+.btn-main::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,#fff,transparent);opacity:0;transition:opacity .3s}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,229,255,.35)}
+.btn-main:hover::before{opacity:.15}
+
+.btn-sec{display:inline-flex;align-items:center;gap:.6rem;
+  padding:.9rem 2rem;border-radius:8px;font-weight:600;font-size:.9rem;
+  border:1px solid var(--border);color:var(--text2);transition:all .25s}
+.btn-sec:hover{border-color:rgba(255,255,255,.2);color:var(--text);background:rgba(255,255,255,.03)}
+
+/* Hero stats */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border-radius:16px;overflow:hidden;max-width:800px}
+.hero-stat{background:var(--bg2);padding:1.75rem 1.5rem;text-align:center;
+  transition:background .3s}
+.hero-stat:hover{background:var(--bg3)}
+.hero-stat-val{font-family:var(--fd);font-size:2rem;font-weight:800;
+  letter-spacing:-.02em;line-height:1}
+.hero-stat-val.c1{color:var(--cyan)}
+.hero-stat-val.c2{color:var(--purple)}
+.hero-stat-val.c3{color:var(--green)}
+.hero-stat-val.c4{color:var(--amber)}
+.hero-stat-label{font-size:.72rem;color:var(--text3);margin-top:.5rem;
+  text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+
+/* === SECTIONS === */
+section{padding:clamp(5rem,10vw,8rem) clamp(1.5rem,5vw,4rem)}
+.s-inner{max-width:1200px;margin:0 auto}
+.s-tag{display:inline-block;padding:.35rem .9rem;border-radius:999px;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.25rem}
+.s-tag.cyan{background:rgba(0,229,255,.08);color:var(--cyan)}
+.s-tag.purple{background:rgba(139,92,246,.08);color:var(--purple)}
+.s-tag.green{background:rgba(16,185,129,.08);color:var(--green)}
+.s-tag.amber{background:rgba(245,158,11,.08);color:var(--amber)}
+.s-title{font-family:var(--fd);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;
+  letter-spacing:-.03em;line-height:1.15;margin-bottom:.75rem}
+.s-sub{font-size:1.05rem;color:var(--text2);max-width:560px;line-height:1.7}
+
+/* === PROBLEM / SOLUTION === */
+#problema{background:var(--bg)}
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:3rem}
+.ps-card{border-radius:20px;padding:2.5rem;position:relative;overflow:hidden}
+.ps-card.bad{background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(239,68,68,.02));
+  border:1px solid rgba(239,68,68,.12)}
+.ps-card.good{background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(0,229,255,.02));
+  border:1px solid rgba(0,229,255,.12)}
+.ps-icon{font-size:2.5rem;margin-bottom:1.5rem}
+.ps-card h3{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:1rem;letter-spacing:-.01em}
+.ps-card.bad h3{color:var(--red)}
+.ps-card.good h3{color:var(--cyan)}
+.ps-items{display:flex;flex-direction:column;gap:.75rem}
+.ps-item{display:flex;align-items:flex-start;gap:.75rem;font-size:.9rem;color:var(--text2);line-height:1.6}
+.ps-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:8px}
+.ps-card.bad .ps-dot{background:var(--red)}
+.ps-card.good .ps-dot{background:var(--cyan)}
+
+/* === SERVICES === */
+#servicos{background:var(--bg2)}
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3rem}
+.srv-card{background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:2.5rem 2rem;position:relative;overflow:hidden;
+  transition:all .3s var(--ease-b)}
+.srv-card:hover{transform:translateY(-4px);border-color:rgba(0,229,255,.2);
+  box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.srv-card.featured{border-color:rgba(0,229,255,.3);
+  background:linear-gradient(180deg,rgba(0,229,255,.04),var(--bg))}
+.srv-badge{position:absolute;top:1.25rem;right:1.25rem;padding:.3rem .7rem;
+  border-radius:999px;font-size:.65rem;font-weight:700;letter-spacing:.04em;
+  background:var(--cyan);color:var(--bg);text-transform:uppercase}
+.srv-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:1.5rem;margin-bottom:1.5rem}
+.srv-icon.i1{background:rgba(0,229,255,.1)}
+.srv-icon.i2{background:rgba(139,92,246,.1)}
+.srv-icon.i3{background:rgba(16,185,129,.1)}
+.srv-name{font-family:var(--fd);font-size:1.15rem;font-weight:700;margin-bottom:.5rem;
+  letter-spacing:-.01em}
+.srv-desc{font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:1.5rem}
+.srv-includes{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.75rem;
+  padding-top:1.25rem;border-top:1px solid var(--border)}
+.srv-inc{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--text2)}
+.srv-check{color:var(--cyan);font-size:.75rem;flex-shrink:0}
+
+
+/* === DASHBOARD SHOWCASE === */
+#showcase{background:var(--bg);position:relative;overflow:hidden}
+.showcase-frame{position:relative;max-width:1100px;margin:3rem auto 0;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.showcase-bar{background:#1a1a2e;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.showcase-dot{width:10px;height:10px;border-radius:50%}
+.showcase-url{flex:1;margin-left:12px;background:rgba(255,255,255,.06);border-radius:6px;
+  padding:5px 12px;font-size:.72rem;color:var(--text3);font-family:var(--fm)}
+.showcase-iframe{width:100%;height:600px;border:none;background:var(--bg3)}
+.showcase-glow{position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,229,255,.08),transparent 70%);pointer-events:none}
+
+/* === CASES === */
+#cases{background:var(--bg2)}
+.cases-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:3rem}
+.case-card{background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:2.25rem;transition:all .3s var(--ease-b)}
+.case-card:hover{border-color:rgba(0,229,255,.15);transform:translateY(-2px)}
+.case-tag{display:inline-block;padding:.25rem .65rem;border-radius:999px;
+  font-size:.68rem;font-weight:600;letter-spacing:.03em;margin-bottom:1rem}
+.case-tag.t1{background:rgba(0,229,255,.1);color:var(--cyan)}
+.case-tag.t2{background:rgba(139,92,246,.1);color:var(--purple)}
+.case-tag.t3{background:rgba(16,185,129,.1);color:var(--green)}
+.case-tag.t4{background:rgba(245,158,11,.1);color:var(--amber)}
+.case-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.75rem;
+  letter-spacing:-.01em}
+.case-desc{font-size:.85rem;color:var(--text2);line-height:1.7;margin-bottom:1.25rem}
+.case-metrics{display:flex;flex-wrap:wrap;gap:.6rem;padding-top:1rem;border-top:1px solid var(--border)}
+.case-metric{display:flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:600;color:var(--cyan)}
+.case-metric::before{content:'↗';font-size:.6rem}
+
+/* === COMO FUNCIONA === */
+#processo{background:var(--bg)}
+.proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.proc-card{text-align:center;padding:2.5rem 2rem;border-radius:20px;
+  background:var(--bg2);border:1px solid var(--border);transition:all .3s var(--ease-b)}
+.proc-card:hover{border-color:rgba(0,229,255,.15);transform:translateY(-3px)}
+.proc-num{font-family:var(--fd);font-size:3.5rem;font-weight:800;
+  background:linear-gradient(180deg,rgba(0,229,255,.3),rgba(0,229,255,.05));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:1rem}
+.proc-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.6rem}
+.proc-desc{font-size:.85rem;color:var(--text2);line-height:1.7}
+
+/* === SOBRE === */
+#sobre{background:var(--bg2)}
+.sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+.sobre-text{font-size:.95rem;color:var(--text2);line-height:1.8}
+.sobre-text p{margin-bottom:1.25rem}
+.sobre-text strong{color:var(--text);font-weight:600}
+.sobre-cards{display:flex;flex-direction:column;gap:1rem}
+.sobre-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;
+  padding:1.25rem 1.5rem;border-left:3px solid var(--cyan);transition:all .25s}
+.sobre-card:hover{border-left-color:var(--purple);transform:translateX(4px)}
+.sobre-card h4{font-size:.7rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:.4rem}
+.sobre-card p{font-size:.9rem;font-weight:600;color:var(--text)}
+.sobre-card span{font-size:.78rem;color:var(--text3)}
+
+/* === CONTATO === */
+#contato{background:var(--bg);position:relative;overflow:hidden}
+.contato-inner{text-align:center;position:relative;z-index:2}
+.contato-inner .s-sub{margin:0 auto 3rem}
+.contact-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1rem;margin-bottom:2.5rem;max-width:700px;margin-left:auto;margin-right:auto}
+.contact-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  padding:1.5rem;display:flex;align-items:center;gap:1rem;transition:all .25s var(--ease-b)}
+.contact-card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-2px)}
+.contact-card .ci{font-size:1.4rem}
+.contact-card .cl{font-size:.7rem;color:var(--text3);margin-bottom:.1rem}
+.contact-card .cv{font-size:.88rem;font-weight:600}
+.social-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.social-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;
+  border-radius:10px;font-size:.85rem;font-weight:600;transition:all .25s var(--ease-b)}
+.social-btn.primary{background:var(--cyan);color:var(--bg)}
+.social-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,255,.3)}
+.social-btn.ghost{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border)}
+.social-btn.ghost:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
+.location{margin-top:2.5rem;color:var(--text3);font-size:.82rem;display:flex;
+  align-items:center;justify-content:center;gap:.4rem}
+
+/* === FOOTER === */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:.78rem;color:var(--text3)}
+.footer-copy span{color:var(--text2)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:.78rem;color:var(--text3);transition:color .2s}
+.footer-links a:hover{color:var(--text2)}
+.srv-footer{padding-top:1.25rem;border-top:1px solid var(--border)}
+.srv-consult{font-size:.82rem;color:var(--text3);font-family:var(--fm);margin-bottom:.5rem}
+.srv-cta{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:600;color:var(--cyan);transition:gap .2s}
+.srv-cta:hover{gap:.7rem}
+
+/* === SCROLL REVEALS === */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.vis{opacity:1;transform:none}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}
+.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
+
+/* === MOBILE === */
+@media(max-width:900px){
+  .n-links{display:none}
+  .hero h1{font-size:clamp(2.2rem,8vw,3.5rem)}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .ps-grid,.srv-grid,.cases-grid,.sobre-grid,.proc-grid{grid-template-columns:1fr}
+  .showcase-iframe{height:400px}
+  .hero{padding-top:120px}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .hero-stat{padding:1.25rem 1rem}
+  .srv-card{padding:2rem 1.5rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .reveal{transition:none;opacity:1;transform:none}
+  .hero-gradient,.hero-gradient-2{animation:none}
+  .hero-tag .pulse{animation:none}
+}
+
+/* === FLOATING CTA === */
+.float-cta{position:fixed;bottom:24px;right:24px;z-index:90;
+  display:flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;
+  border-radius:999px;background:var(--cyan);color:var(--bg);
+  font-weight:700;font-size:.85rem;box-shadow:0 8px 32px rgba(0,229,255,.3);
+  transition:all .3s var(--ease-b);opacity:0;transform:translateY(20px)}
+.float-cta.show{opacity:1;transform:none}
+.float-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 40px rgba(0,229,255,.4)}
+
+/* === MARQUEE === */
+.marquee{overflow:hidden;padding:1.25rem 0;border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);background:var(--bg2)}
+.marquee-track{display:flex;gap:3rem;animation:scroll 30s linear infinite;width:max-content}
+.marquee-item{font-family:var(--fd);font-size:.85rem;font-weight:600;
+  color:var(--text3);white-space:nowrap;display:flex;align-items:center;gap:.75rem}
+.marquee-item .sep{width:4px;height:4px;background:var(--cyan);border-radius:50%;opacity:.5}
+@keyframes scroll{to{transform:translateX(-50%)}}
+</style>
 </head>
-
 <body>
 
-<!-- ===========================
-     NAVIGATION
-=========================== -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">VS</a>
-  <div class="nav-links">
+<!-- GLOW CURSOR -->
+<div class="glow" id="glow"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="n-logo">VS<span>.</span></a>
+  <div class="n-links">
+    <a href="#servicos">Serviços</a>
+    <a href="#showcase">Dashboard</a>
+    <a href="#cases">Resultados</a>
+    <a href="#processo">Como Funciona</a>
     <a href="#sobre">Sobre</a>
-    <a href="#projetos">Projetos</a>
-    <a href="#saas">SaaS & Freelance</a>
-    <a href="#habilidades">Habilidades</a>
-    <a href="#contato">Contato</a>
   </div>
+  <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Vi%20seu%20site%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20de%20dados." target="_blank" class="n-cta">Solicitar Orçamento</a>
 </nav>
 
-<!-- ===========================
-     HERO
-=========================== -->
+<!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-blob hero-blob-1"></div>
-  <div class="hero-blob hero-blob-2"></div>
-  <div class="hero-blob hero-blob-3"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-gradient-2"></div>
 
   <div class="hero-inner">
-    <div>
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Disponível para novas oportunidades
-      </div>
-
-      <h1>
-        Vinicius<br />
-        <span>Sales</span>
-      </h1>
-
-      <p class="hero-role">// Analista de Dados &amp; Sales Operations</p>
-
-      <p class="hero-desc">
-        Transformo dados complexos em decisões estratégicas.
-        Especialista em automação de pipelines, Power BI e inteligência comercial.
-        Self-taught. Orientado a impacto.
-      </p>
-
-      <div class="hero-actions">
-        <a href="#projetos" class="btn-primary">
-          Ver Projetos →
-        </a>
-        <a href="#contato" class="btn-ghost">
-          Entre em Contato
-        </a>
-      </div>
+    <div class="hero-tag reveal">
+      <span class="pulse"></span>
+      Aceito novos projetos
     </div>
 
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-icon blue">📈</div>
-        <div>
-          <div class="stat-value"><span class="counter" data-target="11">0</span>M+</div>
-          <div class="stat-label">Pipeline gerenciado (R$)</div>
+    <h1 class="reveal reveal-d1">
+      Sua empresa está<br><span class="accent">decidindo no escuro?</span>
+    </h1>
+
+    <p class="hero-sub reveal reveal-d2">
+      Crio dashboards, automações e pipelines de dados que transformam
+      planilhas caóticas em decisões estratégicas — para PMEs que
+      querem crescer com inteligência, não com achismo.
+    </p>
+
+    <div class="hero-actions reveal reveal-d3">
+      <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Quero%20um%20diagnóstico%20gratuito%20dos%20meus%20dados." target="_blank" class="btn-main">
+        Diagnóstico Gratuito →
+      </a>
+      <a href="#showcase" class="btn-sec">
+        Ver Dashboard ao Vivo ↓
+      </a>
+    </div>
+
+    <div class="hero-stats reveal reveal-d4">
+      <div class="hero-stat">
+        <div class="hero-stat-val c1"><span class="counter" data-target="561">0</span></div>
+        <div class="hero-stat-label">Tabelas Sincronizadas</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val c2">R$<span class="counter" data-target="11">0</span>M+</div>
+        <div class="hero-stat-label">Pipeline Gerenciado</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val c3"><span class="counter" data-target="100">0</span>%</div>
+        <div class="hero-stat-label">Automação de ETL</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val c4"><span class="counter" data-target="700">0</span>+</div>
+        <div class="hero-stat-label">Oportunidades Mapeadas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Power BI<span class="sep"></span></span>
+    <span class="marquee-item">Python<span class="sep"></span></span>
+    <span class="marquee-item">PostgreSQL<span class="sep"></span></span>
+    <span class="marquee-item">DAX Avançado<span class="sep"></span></span>
+    <span class="marquee-item">ETL Automatizado<span class="sep"></span></span>
+    <span class="marquee-item">Odoo API<span class="sep"></span></span>
+    <span class="marquee-item">React<span class="sep"></span></span>
+    <span class="marquee-item">n8n / Make<span class="sep"></span></span>
+    <span class="marquee-item">WhatsApp Bots<span class="sep"></span></span>
+    <span class="marquee-item">Supabase<span class="sep"></span></span>
+    <span class="marquee-item">FastAPI<span class="sep"></span></span>
+    <span class="marquee-item">Docker<span class="sep"></span></span>
+    <span class="marquee-item">Power BI<span class="sep"></span></span>
+    <span class="marquee-item">Python<span class="sep"></span></span>
+    <span class="marquee-item">PostgreSQL<span class="sep"></span></span>
+    <span class="marquee-item">DAX Avançado<span class="sep"></span></span>
+    <span class="marquee-item">ETL Automatizado<span class="sep"></span></span>
+    <span class="marquee-item">Odoo API<span class="sep"></span></span>
+    <span class="marquee-item">React<span class="sep"></span></span>
+    <span class="marquee-item">n8n / Make<span class="sep"></span></span>
+    <span class="marquee-item">WhatsApp Bots<span class="sep"></span></span>
+    <span class="marquee-item">Supabase<span class="sep"></span></span>
+    <span class="marquee-item">FastAPI<span class="sep"></span></span>
+    <span class="marquee-item">Docker<span class="sep"></span></span>
+  </div>
+</div>
+
+<!-- PROBLEMA / SOLUÇÃO -->
+<section id="problema">
+  <div class="s-inner">
+    <span class="s-tag cyan reveal">O problema</span>
+    <h2 class="s-title reveal">Dados espalhados custam<br>mais do que você imagina</h2>
+    <p class="s-sub reveal">A maioria das PMEs perde dinheiro todo mês por decisões baseadas em achismo. Veja a diferença:</p>
+
+    <div class="ps-grid">
+      <div class="ps-card bad reveal">
+        <div class="ps-icon">🚫</div>
+        <h3>Sem gestão de dados</h3>
+        <div class="ps-items">
+          <div class="ps-item"><span class="ps-dot"></span>Planilhas manuais com dados desatualizados</div>
+          <div class="ps-item"><span class="ps-dot"></span>Horas perdidas consolidando informações</div>
+          <div class="ps-item"><span class="ps-dot"></span>Diretoria pedindo relatórios que demoram dias</div>
+          <div class="ps-item"><span class="ps-dot"></span>Zero visibilidade do funil de vendas</div>
+          <div class="ps-item"><span class="ps-dot"></span>Decisões baseadas em "feeling"</div>
         </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon teal">🗄️</div>
-        <div>
-          <div class="stat-value"><span class="counter" data-target="561">0</span></div>
-          <div class="stat-label">Tabelas sincronizadas</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon rose">⚡</div>
-        <div>
-          <div class="stat-value"><span class="counter" data-target="100">0</span>%</div>
-          <div class="stat-label">Automação de processos</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon blue">🏢</div>
-        <div>
-          <div class="stat-value"><span class="counter" data-target="700">0</span>+</div>
-          <div class="stat-label">Oportunidades monitoradas</div>
+      <div class="ps-card good reveal reveal-d1">
+        <div class="ps-icon">✅</div>
+        <h3>Com inteligência de dados</h3>
+        <div class="ps-items">
+          <div class="ps-item"><span class="ps-dot"></span>Dashboards atualizados automaticamente todo dia</div>
+          <div class="ps-item"><span class="ps-dot"></span>KPIs críticos visíveis em tempo real</div>
+          <div class="ps-item"><span class="ps-dot"></span>Relatórios prontos com 1 clique para a diretoria</div>
+          <div class="ps-item"><span class="ps-dot"></span>Pipeline de vendas mapeado de ponta a ponta</div>
+          <div class="ps-item"><span class="ps-dot"></span>Decisões respaldadas por números reais</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===========================
-     SOBRE
-=========================== -->
+<!-- SERVIÇOS -->
+<section id="servicos">
+  <div class="s-inner">
+    <span class="s-tag purple reveal">Serviços</span>
+    <h2 class="s-title reveal">Escolha o que sua<br>empresa precisa agora</h2>
+    <p class="s-sub reveal">Pacotes pensados para PMEs de Sorocaba e região. Sem contratos longos — resultado primeiro.</p>
+
+    <div class="srv-grid">
+      <div class="srv-card reveal">
+        <div class="srv-icon i1">📊</div>
+        <div class="srv-name">Dashboard Power BI</div>
+        <div class="srv-desc">Dashboard interativo conectado aos seus dados reais, com KPIs, filtros dinâmicos e atualização automática. Visibilidade total para sua diretoria.</div>
+        <div class="srv-includes">
+          <div class="srv-inc"><span class="srv-check">✓</span>Levantamento de requisitos</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Modelagem dos dados</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Dashboard completo com KPIs</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Treinamento da equipe</div>
+        </div>
+        <div class="srv-footer">
+          <div class="srv-consult">Orçamento sob consulta</div>
+          <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Tenho%20interesse%20em%20um%20dashboard%20Power%20BI." target="_blank" class="srv-cta">Solicitar orçamento →</a>
+        </div>
+      </div>
+
+      <div class="srv-card featured reveal reveal-d1">
+        <div class="srv-badge">Mais procurado</div>
+        <div class="srv-icon i2">⚡</div>
+        <div class="srv-name">Automação + Pipeline de Dados</div>
+        <div class="srv-desc">Pipeline completo que extrai dados do seu sistema (Odoo, ERP, planilhas), transforma e carrega automaticamente no Power BI. Zero trabalho manual.</div>
+        <div class="srv-includes">
+          <div class="srv-inc"><span class="srv-check">✓</span>ETL automatizado (Python + SQL)</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Integração com seu ERP/CRM</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Dashboard executivo incluso</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Agendamento automático diário</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>30 dias de suporte incluso</div>
+        </div>
+        <div class="srv-footer">
+          <div class="srv-consult">Orçamento sob consulta</div>
+          <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Preciso%20de%20automação%20e%20pipeline%20de%20dados." target="_blank" class="srv-cta">Solicitar orçamento →</a>
+        </div>
+      </div>
+
+      <div class="srv-card reveal reveal-d2">
+        <div class="srv-icon i3">🤖</div>
+        <div class="srv-name">Landing Page + Automação WhatsApp</div>
+        <div class="srv-desc">Site profissional de alta conversão + chatbot inteligente no WhatsApp que qualifica leads e agenda reuniões automaticamente.</div>
+        <div class="srv-includes">
+          <div class="srv-inc"><span class="srv-check">✓</span>Landing page responsiva</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Copy focada em conversão</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Bot WhatsApp com IA</div>
+          <div class="srv-inc"><span class="srv-check">✓</span>Integração com CRM</div>
+        </div>
+        <div class="srv-footer">
+          <div class="srv-consult">Orçamento sob consulta</div>
+          <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Quero%20landing%20page%20e%20automação%20WhatsApp." target="_blank" class="srv-cta">Solicitar orçamento →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD SHOWCASE -->
+<section id="showcase">
+  <div class="s-inner">
+    <span class="s-tag cyan reveal">Dashboard ao vivo</span>
+    <h2 class="s-title reveal">Isso é o que seus dados<br>podem parecer</h2>
+    <p class="s-sub reveal">Dashboard BI Gerencial real com DRE, Fluxo de Caixa, Comparativo Mensal e controle de Inadimplência. Interaja abaixo.</p>
+
+    <div class="showcase-frame reveal">
+      <div class="showcase-bar">
+        <div class="showcase-dot" style="background:#FF5F57"></div>
+        <div class="showcase-dot" style="background:#FFBD2E"></div>
+        <div class="showcase-dot" style="background:#28C840"></div>
+        <div class="showcase-url">dashboard-bi-gerencial.app — dados simulados</div>
+      </div>
+      <iframe class="showcase-iframe" src="dashboard-preview.html" loading="lazy" title="Dashboard BI Gerencial"></iframe>
+      <div class="showcase-glow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases">
+  <div class="s-inner">
+    <span class="s-tag green reveal">Resultados reais</span>
+    <h2 class="s-title reveal">Cases que comprovam<br>o impacto dos dados</h2>
+    <p class="s-sub reveal">Projetos entregues para empresas reais. Dados anonimizados por compliance.</p>
+
+    <div class="cases-grid">
+      <div class="case-card reveal">
+        <div class="case-tag t1">ETL + Power BI</div>
+        <div class="case-title">Pipeline Odoo → PostgreSQL → Power BI</div>
+        <div class="case-desc">Empresa de segurança com +700 oportunidades comerciais. Processo manual de backup diário consumia horas. Criei pipeline 100% automatizado sincronizando 561 tabelas via API com atualização às 06:00.</div>
+        <div class="case-metrics">
+          <span class="case-metric">100% do manual eliminado</span>
+          <span class="case-metric">561 tabelas em sync</span>
+          <span class="case-metric">R$ 11M visíveis no funil</span>
+        </div>
+      </div>
+
+      <div class="case-card reveal reveal-d1">
+        <div class="case-tag t2">Sales Analytics</div>
+        <div class="case-title">Dashboard Executivo C-Level</div>
+        <div class="case-desc">Diretoria sem visibilidade do funil de vendas. Construí dashboard com KPIs de receita, evolução mensal e categorização de motivos de perda. Resultado: decisões comerciais passaram a ser data-driven.</div>
+        <div class="case-metrics">
+          <span class="case-metric">Win rate 12,2% mapeado</span>
+          <span class="case-metric">Ciclo de 38 dias medido</span>
+          <span class="case-metric">Estratégia data-driven</span>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-tag t3">Contabilidade</div>
+        <div class="case-title">Dashboard BI Gerencial Financeiro</div>
+        <div class="case-desc">Dashboard completo para escritório de contabilidade com DRE interativo, Fluxo de Caixa com cascata, Comparativo Mensal com margens e controle de Inadimplência com filtros por responsável e faixa de atraso.</div>
+        <div class="case-metrics">
+          <span class="case-metric">4 painéis integrados</span>
+          <span class="case-metric">Filtros dinâmicos</span>
+          <span class="case-metric">Visão 360° financeira</span>
+        </div>
+      </div>
+
+      <div class="case-card reveal reveal-d1">
+        <div class="case-tag t4">Prospecção + IA</div>
+        <div class="case-title">Landing Page de Alta Conversão</div>
+        <div class="case-desc">Empresa de serviços em Sorocaba precisava de presença digital urgente. Criei landing page com copy de resposta direta, otimizada para WhatsApp, resultando em aumento imediato de contatos qualificados.</div>
+        <div class="case-metrics">
+          <span class="case-metric">Site entregue em 5 dias</span>
+          <span class="case-metric">CTA direto WhatsApp</span>
+          <span class="case-metric">UX otimizada mobile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="processo">
+  <div class="s-inner">
+    <span class="s-tag amber reveal">Como funciona</span>
+    <h2 class="s-title reveal">Do problema ao<br>dashboard em 3 passos</h2>
+    <p class="s-sub reveal">Sem burocracia. Você me conta o problema, eu proponho a solução e entrego funcionando.</p>
+
+    <div class="proc-grid">
+      <div class="proc-card reveal">
+        <div class="proc-num">01</div>
+        <div class="proc-title">Diagnóstico gratuito</div>
+        <div class="proc-desc">Reunião de 30 minutos onde entendo seus dados, sistemas e dores. Sem compromisso — se eu não puder ajudar, sou honesto.</div>
+      </div>
+      <div class="proc-card reveal reveal-d1">
+        <div class="proc-num">02</div>
+        <div class="proc-title">Proposta e prazo</div>
+        <div class="proc-desc">Em até 48h você recebe uma proposta clara com escopo, investimento e prazo de entrega. Sem surpresas no meio do caminho.</div>
+      </div>
+      <div class="proc-card reveal reveal-d2">
+        <div class="proc-num">03</div>
+        <div class="proc-title">Entrega e suporte</div>
+        <div class="proc-desc">Entrego o projeto funcionando, treino sua equipe e ofereço suporte. Você só paga o restante quando aprovar o resultado.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
 <section id="sobre">
-  <div class="section-inner">
-    <span class="section-tag reveal">Sobre Mim</span>
-    <h2 class="section-title reveal">Profissional orientado<br/>a resultados</h2>
+  <div class="s-inner">
+    <span class="s-tag cyan reveal">Sobre</span>
+    <h2 class="s-title reveal">Quem vai cuidar<br>dos seus dados</h2>
 
     <div class="sobre-grid">
       <div class="sobre-text reveal">
         <p>
-          Profissional com forte viés analítico e histórico de <strong>rápida ascensão</strong>,
-          especializado em Sales Operations, inteligência comercial e engenharia de dados.
+          Sou <strong>Vinicius Sales</strong>, especialista em dados e automação baseado em
+          <strong>Sorocaba, SP</strong>. Construí do zero toda a infraestrutura de dados de uma
+          empresa de segurança patrimonial — do ERP ao dashboard da diretoria — sendo
+          promovido internamente por entregar resultados concretos.
         </p>
         <p>
-          Desenvolvo <strong>pipelines de dados completos</strong> — da extração via API até
-          dashboards analíticos em Power BI — eliminando processos manuais e acelerando a
-          tomada de decisão.
+          Minha especialidade é transformar operações manuais e caóticas em
+          <strong>pipelines automatizados</strong> que alimentam dashboards com dados reais,
+          atualizados, e prontos para decisão. Trabalho com Python, SQL, Power BI, DAX
+          e integrações via API.
         </p>
         <p>
-          Fui <strong>promovido internamente</strong> para a matriz do Grupo Berbel por entregar
-          soluções de dados que geraram visibilidade real do funil de vendas para a diretoria.
-        </p>
-        <p>
-          Além do trabalho principal, desenvolvo <strong>produtos SaaS próprios</strong> e realizo
-          projetos de freelance em desenvolvimento web e automação, sempre com foco em
-          resolver problemas reais de forma prática.
+          Além de dados, desenvolvo <strong>landing pages de alta conversão</strong> e
+          <strong>automações com IA</strong> para WhatsApp — tudo focado em resolver
+          problemas reais de empresas que querem crescer sem escalar a bagunça.
         </p>
       </div>
 
-      <div class="info-cards stagger">
-        <div class="info-card reveal">
-          <h3>Experiência Atual</h3>
-          <p>Assistente Comercial Sênior | BI &amp; CRM</p>
-          <span>Grupo Berbel · 05/2025 – Atual · Sorocaba, SP</span>
+      <div class="sobre-cards">
+        <div class="sobre-card reveal">
+          <h4>Experiência</h4>
+          <p>Assistente Comercial Sênior — BI & CRM</p>
+          <span>Bunker Segurança (01/25) → Grupo Berbel (05/25 – atual)</span>
         </div>
-        <div class="info-card reveal">
-          <h3>Projetos Paralelos</h3>
-          <p>Desenvolvimento SaaS &amp; Freelance</p>
-          <span>CondoGate · ContentAI · PilatesControl · Web</span>
+        <div class="sobre-card reveal reveal-d1">
+          <h4>Stack principal</h4>
+          <p>Power BI · Python · PostgreSQL · DAX · ETL</p>
+          <span>+ React, FastAPI, n8n, Docker, Supabase</span>
         </div>
-        <div class="info-card reveal">
-          <h3>Formação</h3>
-          <p>Técnico em Logística</p>
-          <span>E.T.E.C. Cerquilho · 2015–2018</span>
+        <div class="sobre-card reveal reveal-d2">
+          <h4>Formação</h4>
+          <p>Técnico em Logística — ETEC Cerquilho</p>
+          <span>+ Autodidata em dados, programação e IA</span>
         </div>
-        <div class="info-card reveal">
-          <h3>Localização</h3>
-          <p>📍 Sorocaba, SP</p>
-          <span>Presencial · Híbrido · Remoto</span>
+        <div class="sobre-card reveal reveal-d3">
+          <h4>Disponibilidade</h4>
+          <p>Projetos e consultorias sob demanda</p>
+          <span>Sorocaba, SP — Presencial · Híbrido · Remoto</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider"></div>
-
-<!-- ===========================
-     PROJETOS BI/DATA
-=========================== -->
-<section id="projetos">
-  <div class="section-inner">
-    <div class="projects-header">
-      <span class="section-tag reveal">Projetos em Destaque</span>
-      <h2 class="section-title reveal">Soluções de dados<br/>com impacto mensurável</h2>
-      <p class="section-sub reveal">Automação, análise e visualização transformando operações comerciais reais.</p>
-    </div>
-
-    <div class="projects-grid stagger">
-
-      <!-- P1 -->
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(26,86,255,0.1)">🗄️</div>
-          <div>
-            <div class="project-title">Pipeline de Automação Odoo → Power BI</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(26,86,255,0.1);color:#1a56ff">Python</span>
-              <span class="tag" style="background:rgba(26,86,255,0.1);color:#1a56ff">XML-RPC API</span>
-              <span class="tag" style="background:rgba(26,86,255,0.1);color:#1a56ff">PostgreSQL</span>
-              <span class="tag" style="background:rgba(26,86,255,0.1);color:#1a56ff">Power BI</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          <p><strong style="color:var(--ink)">🎯 Desafio:</strong> Processo manual diário de download, restauração e atualização de backup consumia horas da equipe.</p>
-          <br/>
-          <p><strong style="color:var(--ink)">💡 Solução:</strong> Pipeline 100% automatizado sincronizando 561 tabelas do Odoo para PostgreSQL via API, com Power BI Gateway para atualização na nuvem.</p>
-        </div>
-        <div class="project-metrics">
-          <span class="metric">Eliminação 100% do trabalho manual</span>
-          <span class="metric">Sync às 06:00 via Task Scheduler</span>
-          <span class="metric">561 tabelas · paginação 1.000 registros</span>
-          <span class="metric">SSL enterprise completo</span>
-        </div>
-      </div>
-
-      <!-- P2 -->
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(0,198,167,0.1)">📊</div>
-          <div>
-            <div class="project-title">Dashboard de Sales Analytics Executivo</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(0,198,167,0.12);color:#00836e">Power BI</span>
-              <span class="tag" style="background:rgba(0,198,167,0.12);color:#00836e">DAX</span>
-              <span class="tag" style="background:rgba(0,198,167,0.12);color:#00836e">Sales Analytics</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          <p><strong style="color:var(--ink)">🎯 Desafio:</strong> Dar à diretoria visão consolidada e financeira de todo o funil de vendas.</p>
-          <br/>
-          <p><strong style="color:var(--ink)">💡 Solução:</strong> Dashboard C-Level com KPIs críticos, evolução mensal de faturamento e categorização de motivos de perda.</p>
-        </div>
-        <div class="project-metrics">
-          <span class="metric">700+ oportunidades monitoradas</span>
-          <span class="metric">R$ 11M em receita mapeada</span>
-          <span class="metric">Win rate 12,22% · ciclo 38 dias</span>
-        </div>
-      </div>
-
-      <!-- P3 -->
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(139,92,246,0.1)">🔥</div>
-          <div>
-            <div class="project-title">Inteligência de Cadência e Mapa de Calor</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(139,92,246,0.1);color:#7c3aed">Data Analysis</span>
-              <span class="tag" style="background:rgba(139,92,246,0.1);color:#7c3aed">Sales Ops</span>
-              <span class="tag" style="background:rgba(139,92,246,0.1);color:#7c3aed">Power BI</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          <p><strong style="color:var(--ink)">🎯 Desafio:</strong> Acabar com o "achismo" sobre melhor horário para prospecção e quantas tentativas são necessárias.</p>
-          <br/>
-          <p><strong style="color:var(--ink)">💡 Solução:</strong> Análise de coorte com mapa de calor por dia/horário e curva de eficiência de tentativas de ligação.</p>
-        </div>
-        <div class="project-metrics">
-          <span class="metric">+40% conversão nos melhores horários</span>
-          <span class="metric">Estratégia comercial data-driven</span>
-          <span class="metric">Redução de tempo perdido</span>
-        </div>
-      </div>
-
-      <!-- P4 -->
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(249,115,22,0.1)">📞</div>
-          <div>
-            <div class="project-title">Painel de Diagnóstico de Prospecção</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(249,115,22,0.1);color:#c2410c">SDR/BDR Analytics</span>
-              <span class="tag" style="background:rgba(249,115,22,0.1);color:#c2410c">CRM</span>
-              <span class="tag" style="background:rgba(249,115,22,0.1);color:#c2410c">Odoo</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          <p><strong style="color:var(--ink)">🎯 Desafio:</strong> Monitorar eficiência da equipe de pré-vendas e identificar gargalos no primeiro contato.</p>
-          <br/>
-          <p><strong style="color:var(--ink)">💡 Solução:</strong> Dashboard categorizando feedbacks de ligações, cruzando volume de tentativas com taxa de conversão.</p>
-        </div>
-        <div class="project-metrics">
-          <span class="metric">Visibilidade de caixa postal vs. contato</span>
-          <span class="metric">Melhora na taxa de conversão 3,61%</span>
-          <span class="metric">Cadências otimizadas</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- ===========================
-     SAAS & FREELANCE
-=========================== -->
-<section id="saas" class="dark-section">
-  <div class="section-inner">
-    <div class="projects-header">
-      <span class="section-tag reveal">SaaS &amp; Freelance</span>
-      <h2 class="section-title reveal">Produtos próprios<br/>e trabalhos paralelos</h2>
-      <p class="section-sub reveal">Projetos autorais desenvolvidos fora do horário comercial — construindo produtos reais para problemas reais.</p>
-    </div>
-
-    <div class="projects-grid stagger">
-
-      <!-- CondoGate -->
-      <div class="saas-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(26,86,255,0.2)">🚪</div>
-          <div>
-            <div class="project-title">CondoGate</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(26,86,255,0.2);color:#7ba9ff">FastAPI</span>
-              <span class="tag" style="background:rgba(26,86,255,0.2);color:#7ba9ff">PostgreSQL</span>
-              <span class="tag" style="background:rgba(26,86,255,0.2);color:#7ba9ff">Alpine.js</span>
-              <span class="tag" style="background:rgba(26,86,255,0.2);color:#7ba9ff">Docker</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          Sistema de controle de acesso <strong style="color:rgba(255,255,255,0.8)">offline-first</strong> para condomínios.
-          Arquitetura Docker com fallback de reconhecimento facial (Hikvision/Intelbras + software).
-          Projetado para operar sem internet com sincronização posterior.
-        </div>
-        <div class="project-metrics">
-          <span class="metric" style="color:var(--accent-2)">Offline-first</span>
-          <span class="metric" style="color:var(--accent-2)">Facial recognition</span>
-          <span class="metric" style="color:var(--accent-2)">Docker-based</span>
-        </div>
-      </div>
-
-      <!-- ContentAI -->
-      <div class="saas-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(0,198,167,0.2)">✨</div>
-          <div>
-            <div class="project-title">ContentAI</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(0,198,167,0.15);color:#00c6a7">React</span>
-              <span class="tag" style="background:rgba(0,198,167,0.15);color:#00c6a7">Supabase</span>
-              <span class="tag" style="background:rgba(0,198,167,0.15);color:#00c6a7">Gemini API</span>
-              <span class="tag" style="background:rgba(0,198,167,0.15);color:#00c6a7">Vercel</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          SaaS de geração de conteúdo de marketing com IA, com planos <strong style="color:rgba(255,255,255,0.8)">Starter / Pro / Agency</strong>.
-          Integração com Gemini API, autenticação via Supabase e deploy automatizado no Vercel.
-        </div>
-        <div class="project-metrics">
-          <span class="metric" style="color:var(--accent-2)">Planos SaaS tiered</span>
-          <span class="metric" style="color:var(--accent-2)">AI-powered</span>
-          <span class="metric" style="color:var(--accent-2)">Deploy Vercel</span>
-        </div>
-      </div>
-
-      <!-- PilatesControl -->
-      <div class="saas-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(255,77,109,0.2)">🧘</div>
-          <div>
-            <div class="project-title">PilatesControl</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(255,77,109,0.15);color:#ff8fa3">HTML/CSS/JS</span>
-              <span class="tag" style="background:rgba(255,77,109,0.15);color:#ff8fa3">PWA</span>
-              <span class="tag" style="background:rgba(255,77,109,0.15);color:#ff8fa3">Vercel CLI</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          PWA single-file para controle de pagamentos de instrutores de Pilates.
-          Zero dependências externas, deploy via Vercel CLI, funciona offline como app instalável.
-        </div>
-        <div class="project-metrics">
-          <span class="metric" style="color:var(--accent-2)">Single-file PWA</span>
-          <span class="metric" style="color:var(--accent-2)">Offline-ready</span>
-          <span class="metric" style="color:var(--accent-2)">Zero-dependency</span>
-        </div>
-      </div>
-
-      <!-- Escola Ateliê dos Barbeiros -->
-      <div class="saas-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(234,179,8,0.2)">✂️</div>
-          <div>
-            <div class="project-title">Escola Ateliê dos Barbeiros</div>
-            <div class="project-tags">
-              <span class="tag" style="background:rgba(234,179,8,0.15);color:#ca8a04">HTML</span>
-              <span class="tag" style="background:rgba(234,179,8,0.15);color:#ca8a04">CSS</span>
-              <span class="tag" style="background:rgba(234,179,8,0.15);color:#ca8a04">Web Design</span>
-              <span class="tag" style="background:rgba(234,179,8,0.15);color:#ca8a04">Freelance</span>
-            </div>
-          </div>
-        </div>
-        <div class="project-body">
-          Projeto de freelance para escola de barbearia em Sorocaba. Modificações e melhorias no site
-          <strong style="color:rgba(255,255,255,0.8)">escolaateliedosbarbeiros.com.br</strong>, com análise da identidade visual e
-          alinhamento entre brand DNA e execução digital.
-        </div>
-        <div class="project-metrics">
-          <span class="metric" style="color:var(--accent-2)">UX &amp; brand alignment</span>
-          <span class="metric" style="color:var(--accent-2)">Site ao ar live</span>
-          <span class="metric" style="color:var(--accent-2)">Freelance entregue</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===========================
-     HABILIDADES
-=========================== -->
-<section id="habilidades">
-  <div class="section-inner">
-    <span class="section-tag reveal">Stack Técnico</span>
-    <h2 class="section-title reveal">Habilidades</h2>
-
-    <div class="skills-grid stagger">
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">📊</span>
-          <h3>BI &amp; Visualização</h3>
-        </div>
-        <ul class="skill-list">
-          <li>Power BI Avançado</li>
-          <li>DAX &amp; Power Query</li>
-          <li>Modelagem Dimensional</li>
-          <li>Gateway &amp; Service</li>
-        </ul>
-      </div>
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">🐍</span>
-          <h3>Linguagens</h3>
-        </div>
-        <ul class="skill-list">
-          <li>Python (ETL, APIs)</li>
-          <li>SQL Avançado</li>
-          <li>PostgreSQL</li>
-          <li>XML-RPC / JSON-RPC</li>
-        </ul>
-      </div>
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">🔄</span>
-          <h3>CRM &amp; Automação</h3>
-        </div>
-        <ul class="skill-list">
-          <li>Odoo (Studio &amp; API)</li>
-          <li>Task Scheduler</li>
-          <li>Pipelines de Dados</li>
-          <li>Git &amp; PowerShell</li>
-        </ul>
-      </div>
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">💹</span>
-          <h3>Análise Comercial</h3>
-        </div>
-        <ul class="skill-list">
-          <li>KPIs de Vendas</li>
-          <li>Pipeline Management</li>
-          <li>Funil de Conversão</li>
-          <li>Sales Analytics</li>
-        </ul>
-      </div>
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">🌐</span>
-          <h3>Web &amp; SaaS</h3>
-        </div>
-        <ul class="skill-list">
-          <li>React / Next.js</li>
-          <li>HTML &amp; CSS</li>
-          <li>Supabase / Vercel</li>
-          <li>FastAPI / Docker</li>
-        </ul>
-      </div>
-
-      <div class="skill-card reveal">
-        <div class="skill-card-head">
-          <span class="skill-emoji">🛠️</span>
-          <h3>Ferramentas</h3>
-        </div>
-        <ul class="skill-list">
-          <li>Excel Avançado</li>
-          <li>Git &amp; GitHub</li>
-          <li>VS Code</li>
-          <li>Jupyter Notebook</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- ===========================
-     CONTATO
-=========================== -->
+<!-- CONTATO -->
 <section id="contato">
-  <div class="section-inner contato-inner">
-    <span class="section-tag reveal" style="background:rgba(0,198,167,0.1);color:var(--accent-2)">Contato</span>
-    <h2 class="section-title reveal">Vamos Conversar?</h2>
-    <p class="section-sub reveal">
-      Estou disponível para discutir como dados podem impulsionar seu negócio,
-      ou para novos projetos e oportunidades.
-    </p>
+  <div class="hero-gradient" style="top:auto;bottom:-200px;right:auto;left:-200px"></div>
+  <div class="s-inner contato-inner">
+    <span class="s-tag cyan reveal">Contato</span>
+    <h2 class="s-title reveal">Pronto para parar de<br>decidir no escuro?</h2>
+    <p class="s-sub reveal">O primeiro passo é um diagnóstico gratuito de 30 minutos. Sem compromisso — se eu não puder ajudar, sou honesto.</p>
 
-    <div class="contact-grid stagger">
-      <a href="mailto:viniciussouza7102@gmail.com" class="contact-card reveal">
-        <span class="contact-icon">✉️</span>
-        <div>
-          <div class="contact-label">Email</div>
-          <div class="contact-value">viniciussouza7102@gmail.com</div>
-        </div>
+    <div class="contact-cards">
+      <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Quero%20um%20diagnóstico%20dos%20meus%20dados." target="_blank" class="contact-card reveal">
+        <span class="ci">💬</span>
+        <div><div class="cl">WhatsApp</div><div class="cv">(15) 99678-4892</div></div>
       </a>
-      <a href="tel:+5515996784892" class="contact-card reveal">
-        <span class="contact-icon">📱</span>
-        <div>
-          <div class="contact-label">Telefone / WhatsApp</div>
-          <div class="contact-value">(15) 99678-4892</div>
-        </div>
+      <a href="/cdn-cgi/l/email-protection#05736c6b6c666c7076766a707f6432343537456268646c692b666a68" class="contact-card reveal reveal-d1">
+        <span class="ci">✉️</span>
+        <div><div class="cl">Email</div><div class="cv"><span class="__cf_email__" data-cfemail="0b7d62656268627e7878647e716a3c3a3b394b6c666a626725686466">[email&#160;protected]</span></div></div>
       </a>
     </div>
 
-    <div class="social-links">
-      <a href="https://www.linkedin.com/in/vinicius-sales-7a0379238/" target="_blank" rel="noopener" class="social-btn primary">
-        🔗 LinkedIn
-      </a>
-      <a href="https://github.com/viniciussales" target="_blank" rel="noopener" class="social-btn secondary">
-        🐙 GitHub
-      </a>
+    <div class="social-btns reveal">
+      <a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Quero%20um%20diagnóstico%20dos%20meus%20dados." target="_blank" class="social-btn primary">💬 Solicitar Diagnóstico Gratuito</a>
+      <a href="https://www.linkedin.com/in/vinicius-sales-7a0379238/" target="_blank" class="social-btn ghost">🔗 LinkedIn</a>
+      <a href="https://github.com/Espektroh" target="_blank" class="social-btn ghost">🐙 GitHub</a>
     </div>
 
-    <div class="location-tag">
-      📍 Sorocaba, SP — Disponível para presencial, híbrido ou remoto
-    </div>
+    <div class="location reveal">📍 Sorocaba, SP — Presencial · Híbrido · Remoto</div>
   </div>
 </section>
 
-<!-- ===========================
-     FOOTER
-=========================== -->
+<!-- FOOTER -->
 <footer>
-  <p>© 2025 <span>Vinicius Sales de Souza</span>. Todos os direitos reservados.</p>
-  <p style="margin-top:0.35rem">Construído com HTML, CSS &amp; JS puro — sem frameworks</p>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 <span>Vinicius Sales de Souza</span>. Todos os direitos reservados.</div>
+    <div class="footer-links">
+      <a href="curriculo.html">Trajetória profissional</a>
+      <a href="https://www.linkedin.com/in/vinicius-sales-7a0379238/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/Espektroh" target="_blank">GitHub</a>
+    </div>
+  </div>
 </footer>
 
-<!-- ===========================
-     JAVASCRIPT
-=========================== -->
-<script>
-  /* ---- Nav scroll shadow ---- */
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 20);
-  }, { passive: true });
+<!-- FLOATING CTA -->
+<a href="https://wa.me/5515996784892?text=Oi%20Vinicius!%20Vi%20seu%20site%20e%20quero%20conversar." target="_blank" class="float-cta" id="floatCta">💬 Falar no WhatsApp</a>
 
-  /* ---- Intersection Observer: reveal ---- */
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* Glow cursor */
+const glow=document.getElementById('glow');
+let gx=0,gy=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{gx=e.clientX;gy=e.clientY},{passive:true});
+(function loop(){cx+=(gx-cx)*.08;cy+=(gy-cy)*.08;
+  glow.style.left=cx+'px';glow.style.top=cy+'px';requestAnimationFrame(loop)})();
 
-  document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
+/* Nav scroll */
+const nav=document.getElementById('nav');
+const floatCta=document.getElementById('floatCta');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',scrollY>60);
+  floatCta.classList.toggle('show',scrollY>600);
+},{passive:true});
 
-  /* ---- Counter animation ---- */
-  function animateCounter(el, target, duration = 1800) {
-    let start = null;
-    const step = (timestamp) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
-      el.textContent = Math.round(ease * target);
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
+/* Scroll reveal */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.dataset.target, 10);
-        animateCounter(el, target);
-        counterObserver.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
-
-  /* ---- Hero parallax subtle ---- */
-  const blobs = document.querySelectorAll('.hero-blob');
-  window.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 30;
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-    blobs.forEach((b, i) => {
-      const factor = (i + 1) * 0.4;
-      b.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
-    });
-  }, { passive: true });
-</script>
-
-</body>
-</html>
+/* Counter animation */
+function animateCounter(el,target,dur=1800){
+  let start=null;
+  const step=ts=>{
+    if(!start)start=ts;
+    const p=Math.min((ts-start)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(ease*target);
+    if(p<1)requestAnimationFrame(step);
+  };requestAnimationFrame(step);
+}
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){
+    animateCounter(e.target,parseInt(e.

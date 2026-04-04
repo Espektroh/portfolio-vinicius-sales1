@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard BI Gerencial</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #185FA5; --azul-light: #E6F1FB; --azul-mid: #378ADD;
+    --verde: #1D9E75; --verde-light: #E1F5EE; --verde-mid: #5DCAA5;
+    --ambar: #EF9F27; --ambar-light: #FAEEDA; --ambar-mid: #FAC775;
+    --vermelho: #E24B4A; --vermelho-light: #FCEBEB; --vermelho-mid: #F09595;
+    --fundo: #F4F3F0; --branco: #FFFFFF; --cinza: #888780;
+    --borda: #E0DDD7; --texto: #2C2C2A; --texto-sec: #5F5E5A;
+    --r: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--fundo); color: var(--texto); min-height: 100vh; }
+
+  /* HEADER */
+  .app-header {
+    background: var(--texto); color: #fff; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between; height: 56px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .app-header h1 { font-size: 15px; font-weight: 500; letter-spacing: 0.02em; }
+  .app-header .subtitulo { font-size: 12px; color: #888; font-family: 'DM Mono', monospace; }
+  .update-time { font-size: 11px; color: #666; font-family: 'DM Mono', monospace; }
+
+  /* NAV TABS */
+  .nav-tabs {
+    background: var(--branco); border-bottom: 1px solid var(--borda);
+    display: flex; padding: 0 32px; gap: 4px; position: sticky; top: 56px; z-index: 99;
+  }
+  .tab-btn {
+    padding: 14px 20px; font-size: 13px; font-weight: 500; cursor: pointer;
+    border: none; background: none; color: var(--texto-sec);
+    border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab-btn:hover { color: var(--texto); }
+  .tab-btn.ativo { color: var(--azul); border-bottom-color: var(--azul); }
+  .tab-btn .tab-icon { margin-right: 6px; font-size: 14px; }
+
+  /* PAINEIS */
+  .painel { display: none; padding: 28px 32px; animation: fadeIn .25s ease; }
+  .painel.ativo { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* PAINEL HEADER */
+  .painel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+  }
+  .painel-titulo { font-size: 22px; font-weight: 600; color: var(--texto); }
+  .painel-sub { font-size: 13px; color: var(--texto-sec); margin-top: 2px; }
+
+  /* FILTROS */
+  .filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filtro-label { font-size: 12px; color: var(--texto-sec); font-weight: 500; margin-right: 4px; }
+  .filtro-btn {
+    padding: 6px 14px; font-size: 12px; font-weight: 500; border-radius: 20px;
+    border: 1.5px solid var(--borda); background: var(--branco); color: var(--texto-sec);
+    cursor: pointer; transition: all .15s; font-family: 'DM Sans', sans-serif;
+  }
+  .filtro-btn:hover { border-color: var(--azul-mid); color: var(--azul); }
+  .filtro-btn.ativo { background: var(--azul); border-color: var(--azul); color: #fff; }
+  .filtro-btn.verde.ativo { background: var(--verde); border-color: var(--verde); }
+  .filtro-btn.ambar.ativo { background: var(--ambar); border-color: var(--ambar); }
+  .filtro-btn.vermelho.ativo { background: var(--vermelho); border-color: var(--vermelho); }
+  .btn-limpar {
+    padding: 6px 12px; font-size: 11px; border-radius: 20px; border: 1px solid var(--borda);
+    background: none; color: var(--texto-sec); cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-limpar:hover { color: var(--vermelho); border-color: var(--vermelho); }
+
+  /* KPI CARDS */
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 24px; }
+  .kpi {
+    background: var(--branco); border-radius: var(--r); border: 1px solid var(--borda);
+    padding: 18px 20px; transition: box-shadow .15s;
+  }
+  .kpi:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .kpi-label { font-size: 11px; font-weight: 500; color: var(--texto-sec); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .kpi-valor { font-size: 26px; font-weight: 600; line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: var(--texto-sec); margin-top: 4px; font-family: 'DM Mono', monospace; }
+  .c-azul { color: var(--azul); } .c-verde { color: var(--verde); }
+  .c-ambar { color: var(--ambar); } .c-vermelho { color: var(--vermelho); }
+
+  /* GRID DE GRAFICOS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3b { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-full { margin-bottom: 16px; }
+
+  /* CARD GRAFICO */
+  .chart-card {
+    background: var(--branco); border-radius: var(--r); border: 1px solid var(--borda);
+    padding: 20px; position: relative;
+  }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--texto); margin-bottom: 4px; }
+  .chart-sub { font-size: 11px; color: var(--texto-sec); margin-bottom: 16px; }
+  .chart-wrap { position: relative; }
+
+  /* TABELA INADIMPLÊNCIA */
+  .tabela-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--borda); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #F8F7F4; }
+  th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--texto-sec); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+  td { padding: 11px 14px; border-bottom: 1px solid #F0EEE9; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFAF8; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .badge-judicial { background: var(--vermelho-light); color: #791F1F; }
+  .badge-negociacao { background: var(--ambar-light); color: #633806; }
+  .badge-amigavel { background: #FFFBEB; color: #92400E; }
+  .badge-aviso { background: var(--verde-light); color: #085041; }
+  .badge-juridica { background: #F3E8FF; color: #581C87; }
+
+  /* BARRA PROGRESSO */
+  .barra-wrap { display: flex; align-items: center; gap: 10px; }
+  .barra { height: 6px; border-radius: 3px; background: var(--fundo); flex: 1; overflow: hidden; }
+  .barra-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .barra-txt { font-size: 12px; font-weight: 500; font-family: 'DM Mono', monospace; min-width: 70px; text-align: right; }
+
+  /* LEGENDA MANUAL */
+  .legenda { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+  .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--texto-sec); }
+  .legenda-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legenda-line { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+
+  /* RESPONSIVO */
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-3, .grid-3b { grid-template-columns: 1fr; }
+    .painel { padding: 20px 16px; }
+    .nav-tabs { padding: 0 16px; overflow-x: auto; }
+  }
+
+  /* SEMAFORO INADIMPLÊNCIA */
+  .valor-alto { color: var(--vermelho); font-weight: 600; }
+  .valor-med { color: var(--ambar); font-weight: 500; }
+
+  /* WATERFALL BARS */
+  .wf-container { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 0 4px; }
+  .wf-col { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .wf-bar { width: 100%; border-radius: 4px 4px 0 0; transition: opacity .2s; min-height: 4px; }
+  .wf-bar:hover { opacity: .8; }
+  .wf-label { font-size: 9px; color: var(--texto-sec); margin-top: 4px; text-align: center; font-family: 'DM Mono', monospace; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div>
+    <h1>Dashboard BI Gerencial</h1>
+    <div class="subtitulo">Jan/25 → Dez/25 · Dados em tempo real do modelo</div>
+  </div>
+  <div class="update-time" id="update-time"></div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn ativo" onclick="mudarPainel('dre', this)"><span class="tab-icon">📊</span>DRE</button>
+  <button class="tab-btn" onclick="mudarPainel('fluxo', this)"><span class="tab-icon">💰</span>Fluxo de Caixa</button>
+  <button class="tab-btn" onclick="mudarPainel('comparativo', this)"><span class="tab-icon">📈</span>Comparativo Mensal</button>
+  <button class="tab-btn" onclick="mudarPainel('inadimplencia', this)"><span class="tab-icon">⚠️</span>Inadimplência</button>
+</nav>
+
+<!-- ======== PAINEL 1 — DRE ======== -->
+<section class="painel ativo" id="painel-dre">
+  <div class="painel-header">
+    <div>
+      <div class="painel-titulo">Demonstrativo de Resultado</div>
+      <div class="painel-sub">Saúde financeira · Receita, margem e composição de custos</div>
+    </div>
+    <div class="filtros">
+      <span class="filtro-label">Mês:</span>
+      <button class="filtro-btn ativo" onclick="filtrarDRE('todos', this)">Todos</button>
+      <button class="filtro-btn" onclick="filtrarDRE('Q1', this)">Q1</button>
+      <button class="filtro-btn" onclick="filtrarDRE('Q2', this)">Q2</button>
+      <button class="filtro-btn" onclick="filtrarDRE('Q3', this)">Q3</button>
+      <button class="filtro-btn" onclick="filtrarDRE('Q4', this)">Q4</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Receita Total</div><div class="kpi-valor c-azul" id="kpi-receita">R$ 1.194.000</div><div class="kpi-sub">Jan–Dez/25</div></div>
+    <div class="kpi"><div class="kpi-label">Lucro Líquido</div><div class="kpi-valor c-verde" id="kpi-lucro">R$ 255.265</div><div class="kpi-sub">Acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">EBITDA</div><div class="kpi-valor c-ambar" id="kpi-ebitda">R$ 346.738</div><div class="kpi-sub">Acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Margem Líquida</div><div class="kpi-valor c-azul" id="kpi-margem">21,4%</div><div class="kpi-sub">Média do período</div></div>
+  </div>
+
+  <div class="grid-3">
+    <div class="chart-card" style="grid-column: span 2;">
+      <div class="chart-title">Receita vs Lucro Líquido</div>
+      <div class="chart-sub">Evolução mensal comparada</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-dre-barras"></canvas></div>
+      <div class="legenda">
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--azul)"></div>Receita Total</div>
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--verde)"></div>Lucro Líquido</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Composição de Custos</div>
+      <div class="chart-sub">Distribuição por conta</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chart-dre-rosca"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-full">
+    <div class="chart-card">
+      <div class="chart-title">Evolução da Margem Líquida</div>
+      <div class="chart-sub">% sobre receita bruta — meta referencial 20%</div>
+      <div class="chart-wrap" style="height:140px"><canvas id="chart-dre-margem"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PAINEL 2 — FLUXO ======== -->
+<section class="painel" id="painel-fluxo">
+  <div class="painel-header">
+    <div>
+      <div class="painel-titulo">Fluxo de Caixa</div>
+      <div class="painel-sub">Capacidade de pagamento · Saldo, entradas e saídas operacionais</div>
+    </div>
+    <div class="filtros">
+      <span class="filtro-label">Período:</span>
+      <button class="filtro-btn verde ativo" onclick="filtrarFluxo('todos', this)">Todos</button>
+      <button class="filtro-btn verde" onclick="filtrarFluxo('Q1', this)">Q1</button>
+      <button class="filtro-btn verde" onclick="filtrarFluxo('Q2', this)">Q2</button>
+      <button class="filtro-btn verde" onclick="filtrarFluxo('Q3', this)">Q3</button>
+      <button class="filtro-btn verde" onclick="filtrarFluxo('Q4', this)">Q4</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Saldo Final</div><div class="kpi-valor c-azul" id="kpi-saldo">R$ 455.437</div><div class="kpi-sub">Acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Recebimentos</div><div class="kpi-valor c-verde" id="kpi-receb">R$ 1.229.820</div><div class="kpi-sub">Total</div></div>
+    <div class="kpi"><div class="kpi-label">Fluxo Op. Líquido</div><div class="kpi-valor c-ambar" id="kpi-fluxoop">R$ 467.332</div><div class="kpi-sub">Acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Variação de Caixa</div><div class="kpi-valor c-verde" id="kpi-variacao">R$ 405.437</div><div class="kpi-sub">Total período</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Entradas vs Saídas Operacionais</div>
+      <div class="chart-sub">Recebimentos x Fluxo operacional por mês</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-fluxo-barras"></canvas></div>
+      <div class="legenda">
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--verde)"></div>Recebimentos</div>
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--vermelho)"></div>Fluxo Op. Líquido</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Evolução do Saldo de Caixa</div>
+      <div class="chart-sub">Saldo acumulado ao final de cada mês</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-fluxo-area"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-full">
+    <div class="chart-card">
+      <div class="chart-title">Variação de Caixa — Cascata</div>
+      <div class="chart-sub">Resultado líquido mensal (positivo / negativo)</div>
+      <div id="waterfall-container" class="wf-container"></div>
+      <div class="legenda" style="margin-top:8px">
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--verde)"></div>Positivo</div>
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--vermelho)"></div>Negativo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PAINEL 3 — COMPARATIVO ======== -->
+<section class="painel" id="painel-comparativo">
+  <div class="painel-header">
+    <div>
+      <div class="painel-titulo">Comparativo Mensal</div>
+      <div class="painel-sub">Tendência e evolução · Análise mês a mês e por trimestre</div>
+    </div>
+    <div class="filtros">
+      <span class="filtro-label">Trimestre:</span>
+      <button class="filtro-btn ambar ativo" onclick="filtrarComp('todos', this)">Todos</button>
+      <button class="filtro-btn ambar" onclick="filtrarComp('Q1', this)">Q1</button>
+      <button class="filtro-btn ambar" onclick="filtrarComp('Q2', this)">Q2</button>
+      <button class="filtro-btn ambar" onclick="filtrarComp('Q3', this)">Q3</button>
+      <button class="filtro-btn ambar" onclick="filtrarComp('Q4', this)">Q4</button>
+    </div>
+  </div>
+
+  <div class="kpis" style="grid-template-columns: repeat(2, minmax(0,1fr));">
+    <div class="kpi"><div class="kpi-label">Receita Bruta Total</div><div class="kpi-valor c-azul" id="kpi-comp-receita">R$ 1.194.000</div><div class="kpi-sub">Período selecionado</div></div>
+    <div class="kpi"><div class="kpi-label">Margem Líquida Média</div><div class="kpi-valor c-verde" id="kpi-comp-margem">21,3%</div><div class="kpi-sub">Média do período</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Receita Líquida, Lucro Bruto e EBITDA</div>
+      <div class="chart-sub">Evolução das 3 linhas de resultado</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-comp-linhas"></canvas></div>
+      <div class="legenda">
+        <div class="legenda-item"><div class="legenda-line" style="background:var(--azul)"></div>Receita Líquida</div>
+        <div class="legenda-item"><div class="legenda-line" style="background:var(--verde)"></div>Lucro Bruto</div>
+        <div class="legenda-item"><div class="legenda-line" style="background:var(--ambar)"></div>EBITDA</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Margens Bruta e Líquida</div>
+      <div class="chart-sub">% por mês comparadas</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-comp-margens"></canvas></div>
+      <div class="legenda">
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--verde)"></div>Margem Bruta</div>
+        <div class="legenda-item"><div class="legenda-dot" style="background:var(--azul)"></div>Margem Líquida</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-full">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição da Receita por Trimestre</div>
+      <div class="chart-sub">Participação de cada trimestre no total anual</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center">
+        <div class="chart-wrap" style="height:200px"><canvas id="chart-comp-rosca"></canvas></div>
+        <div id="trimestre-legenda" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PAINEL 4 — INADIMPLÊNCIA ======== -->
+<section class="painel" id="painel-inadimplencia">
+  <div class="painel-header">
+    <div>
+      <div class="painel-titulo">Inadimplência</div>
+      <div class="painel-sub">Risco de crédito · Clientes em atraso, valores e status</div>
+    </div>
+    <div class="filtros">
+      <span class="filtro-label">Responsável:</span>
+      <button class="filtro-btn vermelho ativo" onclick="filtrarInad('todos', 'resp', this)">Todos</button>
+      <button class="filtro-btn vermelho" onclick="filtrarInad('Carlos', 'resp', this)">Carlos</button>
+      <button class="filtro-btn vermelho" onclick="filtrarInad('Ana', 'resp', this)">Ana</button>
+      <button class="filtro-btn vermelho" onclick="filtrarInad('Pedro', 'resp', this)">Pedro</button>
+      <button class="btn-limpar" onclick="limparFiltrosInad()">✕ Limpar</button>
+    </div>
+  </div>
+
+  <div class="filtros" style="margin-bottom:20px">
+    <span class="filtro-label">Faixa:</span>
+    <button class="filtro-btn ativo" id="faixa-todos" onclick="filtrarInad('todos', 'faixa', this)">Todas</button>
+    <button class="filtro-btn" onclick="filtrarInad('1-15 dias', 'faixa', this)">1–15 dias</button>
+    <button class="filtro-btn" onclick="filtrarInad('16-30 dias', 'faixa', this)">16–30 dias</button>
+    <button class="filtro-btn" onclick="filtrarInad('31-60 dias', 'faixa', this)">31–60 dias</button>
+    <button class="filtro-btn" onclick="filtrarInad('61-90 dias', 'faixa', this)">61–90 dias</button>
+    <button class="filtro-btn" onclick="filtrarInad('Acima 90 dias', 'faixa', this)">+90 dias</button>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Total Inadimplente</div><div class="kpi-valor c-vermelho" id="kpi-inad-total">R$ 186.670</div><div class="kpi-sub" id="kpi-inad-count">15 clientes</div></div>
+    <div class="kpi"><div class="kpi-label">Ação Judicial</div><div class="kpi-valor c-vermelho" id="kpi-inad-judicial">R$ 40.100</div><div class="kpi-sub">Risco máximo</div></div>
+    <div class="kpi"><div class="kpi-label">Em Negociação</div><div class="kpi-valor c-ambar" id="kpi-inad-negoc">R$ 98.300</div><div class="kpi-sub">Em andamento</div></div>
+    <div class="kpi"><div class="kpi-label">Acima 90 dias</div><div class="kpi-valor c-vermelho" id="kpi-inad-90">R$ 40.100</div><div class="kpi-sub">Crítico</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Valor por Faixa de Atraso</div>
+      <div class="chart-sub">Concentração do risco por prazo</div>
+      <div id="barras-horizontais" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Distribuição por Status</div>
+      <div class="chart-sub">Composição da carteira inadimplente</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chart-inad-rosca"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-full">
+    <div class="chart-card">
+      <div class="chart-title">Clientes Inadimplentes</div>
+      <div class="chart-sub">Lista completa com status e responsável</div>
+      <div class="tabela-wrap" style="margin-top:12px">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Valor em Aberto</th>
+              <th>Dias em Atraso</th>
+              <th>Faixa</th>
+              <th>Status</th>
+              <th>Responsável</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-inad"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ===================== DADOS =====================
+const meses = ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'];
+const trimestres = ['Q1','Q1','Q1','Q2','Q2','Q2','Q3','Q3','Q3','Q4','Q4','Q4'];
+
+const dadosDRE = [
+  {mes:'Jan/25',trim:'Q1',receita:85000,lucro:17909.8,ebitda:24684,margem:0.2107},
+  {mes:'Fev/25',trim:'Q1',receita:92000,lucro:19532.96,ebitda:26716.8,margem:0.2123},
+  {mes:'Mar/25',trim:'Q1',receita:78000,lucro:16286.64,ebitda:22651.2,margem:0.2088},
+  {mes:'Abr/25',trim:'Q2',receita:95000,lucro:20228.6,ebitda:27588,margem:0.2129},
+  {mes:'Mai/25',trim:'Q2',receita:101000,lucro:21619.88,ebitda:29330.4,margem:0.2141},
+  {mes:'Jun/25',trim:'Q2',receita:88000,lucro:18605.44,ebitda:25555.2,margem:0.2114},
+  {mes:'Jul/25',trim:'Q3',receita:96000,lucro:20460.48,ebitda:27878.4,margem:0.2131},
+  {mes:'Ago/25',trim:'Q3',receita:103000,lucro:22083.64,ebitda:29911.2,margem:0.2144},
+  {mes:'Set/25',trim:'Q3',receita:91000,lucro:19301.08,ebitda:26426.4,margem:0.2121},
+  {mes:'Out/25',trim:'Q4',receita:108000,lucro:23243.04,ebitda:31363.2,margem:0.2152},
+  {mes:'Nov/25',trim:'Q4',receita:115000,lucro:24866.2,ebitda:33396,margem:0.2162},
+  {mes:'Dez/25',trim:'Q4',receita:142000,lucro:31126.96,ebitda:41236.8,margem:0.2192}
+];
+
+const dadosFluxo = [
+  {mes:'Jan/25',trim:'Q1',receb:87550,fluxoOp:33269,variacao:30642.5,saldo:80642.5},
+  {mes:'Fev/25',trim:'Q1',receb:94760,fluxoOp:36008.8,variacao:33166,saldo:113808.5},
+  {mes:'Mar/25',trim:'Q1',receb:80340,fluxoOp:30529.2,variacao:28119,saldo:141927.5},
+  {mes:'Abr/25',trim:'Q2',receb:97850,fluxoOp:37183,variacao:29247.5,saldo:171175},
+  {mes:'Mai/25',trim:'Q2',receb:104030,fluxoOp:39531.4,variacao:36410.5,saldo:207585.5},
+  {mes:'Jun/25',trim:'Q2',receb:90640,fluxoOp:34443.2,variacao:23724,saldo:231309.5},
+  {mes:'Jul/25',trim:'Q3',receb:98880,fluxoOp:37574.4,variacao:34608,saldo:265917.5},
+  {mes:'Ago/25',trim:'Q3',receb:106090,fluxoOp:40314.2,variacao:37131.5,saldo:303049},
+  {mes:'Set/25',trim:'Q3',receb:93730,fluxoOp:35617.4,variacao:20805.5,saldo:323854.5},
+  {mes:'Out/25',trim:'Q4',receb:111240,fluxoOp:42271.2,variacao:38934,saldo:362788.5},
+  {mes:'Nov/25',trim:'Q4',receb:118450,fluxoOp:45011,variacao:41457.5,saldo:404246},
+  {mes:'Dez/25',trim:'Q4',receb:146260,fluxoOp:55578.8,variacao:51191,saldo:455437}
+];
+
+const dadosComp = [
+  {mes:'Jan/25',trim:'Q1',recBruta:85000,recLiq:74800,lucroBruto:43384,ebitda:24684,lucroLiq:17909.8,margBruta:0.58,margLiq:0.2107},
+  {mes:'Fev/25',trim:'Q1',recBruta:92000,recLiq:80960,lucroBruto:46956.8,ebitda:26716.8,lucroLiq:19532.96,margBruta:0.58,margLiq:0.2123},
+  {mes:'Mar/25',trim:'Q1',recBruta:78000,recLiq:68640,lucroBruto:39811.2,ebitda:22651.2,lucroLiq:16286.64,margBruta:0.58,margLiq:0.2088},
+  {mes:'Abr/25',trim:'Q2',recBruta:95000,recLiq:83600,lucroBruto:48488,ebitda:27588,lucroLiq:20228.6,margBruta:0.58,margLiq:0.2129},
+  {mes:'Mai/25',trim:'Q2',recBruta:101000,recLiq:88880,lucroBruto:51550.4,ebitda:29330.4,lucroLiq:21619.88,margBruta:0.58,margLiq:0.2141},
+  {mes:'Jun/25',trim:'Q2',recBruta:88000,recLiq:77440,lucroBruto:44915.2,ebitda:25555.2,lucroLiq:18605.44,margBruta:0.58,margLiq:0.2114},
+  {mes:'Jul/25',trim:'Q3',recBruta:96000,recLiq:84480,lucroBruto:48998.4,ebitda:27878.4,lucroLiq:20460.48,margBruta:0.58,margLiq:0.2131},
+  {mes:'Ago/25',trim:'Q3',recBruta:103000,recLiq:90640,lucroBruto:52571.2,ebitda:29911.2,lucroLiq:22083.64,margBruta:0.58,margLiq:0.2144},
+  {mes:'Set/25',trim:'Q3',recBruta:91000,recLiq:80080,lucroBruto:46446.4,ebitda:26426.4,lucroLiq:19301.08,margBruta:0.58,margLiq:0.2121},
+  {mes:'Out/25',trim:'Q4',recBruta:108000,recLiq:95040,lucroBruto:55123.2,ebitda:31363.2,lucroLiq:23243.04,margBruta:0.58,margLiq:0.2152},
+  {mes:'Nov/25',trim:'Q4',recBruta:115000,recLiq:101200,lucroBruto:58696,ebitda:33396,lucroLiq:24866.2,margBruta:0.58,margLiq:0.2162},
+  {mes:'Dez/25',trim:'Q4',recBruta:142000,recLiq:124960,lucroBruto:72476.8,ebitda:41236.8,lucroLiq:31126.96,margBruta:0.58,margLiq:0.2192}
+];
+
+const inadimplencia = [
+  {cliente:'Supermercado Bom Preço',valor:38900,dias:110,faixa:'Acima 90 dias',status:'Acao Judicial',resp:'Carlos'},
+  {cliente:'Construtora Alfa Ltda',valor:45000,dias:58,faixa:'31-60 dias',status:'Negociacao',resp:'Ana'},
+  {cliente:'Hotel Boa Estada Ltda',valor:28000,dias:43,faixa:'31-60 dias',status:'Negociacao',resp:'Ana'},
+  {cliente:'Clinica Vida Plena',valor:15600,dias:73,faixa:'61-90 dias',status:'Cobranca Juridica',resp:'Ana'},
+  {cliente:'Industria Norte SA',valor:22100,dias:50,faixa:'31-60 dias',status:'Negociacao',resp:'Ana'},
+  {cliente:'Oficina Mecânica Costa',valor:1200,dias:102,faixa:'Acima 90 dias',status:'Acao Judicial',resp:'Carlos'},
+  {cliente:'Comercio Silva Ltda',valor:8450,dias:63,faixa:'61-90 dias',status:'Cobranca Juridica',resp:'Carlos'},
+  {cliente:'Auto Peças Irmãos ME',valor:6700,dias:26,faixa:'16-30 dias',status:'Cobranca Amigavel',resp:'Carlos'},
+  {cliente:'Escola Futuro Brilhante',valor:4500,dias:19,faixa:'16-30 dias',status:'Cobranca Amigavel',resp:'Ana'},
+  {cliente:'Mercado Central Ltda',valor:3200,dias:42,faixa:'31-60 dias',status:'Negociacao',resp:'Carlos'},
+  {cliente:'Transportes Rápido Ltda',valor:7200,dias:4,faixa:'1-15 dias',status:'Aviso de Vencimento',resp:'Pedro'},
+  {cliente:'Restaurante Sabor Ltda',valor:2340,dias:9,faixa:'1-15 dias',status:'Aviso de Vencimento',resp:'Pedro'},
+  {cliente:'Posto Estrela ME',valor:1850,dias:35,faixa:'31-60 dias',status:'Cobranca Amigavel',resp:'Pedro'},
+  {cliente:'Farmácia Saúde Total',valor:980,dias:18,faixa:'16-30 dias',status:'Cobranca Amigavel',resp:'Pedro'},
+  {cliente:'Padaria Pão Quente ME',valor:650,dias:7,faixa:'1-15 dias',status:'Aviso de Vencimento',resp:'Pedro'}
+];
+
+// ===================== HELPERS =====================
+const fmtR = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+const fmtPct = v => (v * 100).toFixed(1) + '%';
+const soma = (arr, campo) => arr.reduce((s, r) => s + r[campo], 0);
+const media = (arr, campo) => soma(arr, campo) / arr.length;
+
+const cores = {
+  azul:'#185FA5', verde:'#1D9E75', ambar:'#EF9F27', vermelho:'#E24B4A',
+  azulA:'rgba(24,95,165,0.12)', verdeA:'rgba(29,158,117,0.12)'
+};
+
+// ===================== ESTADO =====================
+let filtDRE = 'todos', filtFluxo = 'todos', filtComp = 'todos';
+let filtInadResp = 'todos', filtInadFaixa = 'todos';
+let charts = {};
+
+// ===================== NAVEGAÇÃO =====================
+function mudarPainel(id, btn) {
+  document.querySelectorAll('.painel').forEach(p => p.classList.remove('ativo'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.getElementById('painel-' + id).classList.add('ativo');
+  btn.classList.add('ativo');
+}
+
+// ===================== CHART UTILS =====================
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+const baseOpts = (extra={}) => ({
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtR(ctx.raw) } } },
+  scales: {
+    x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 }, color: '#888' } },
+    y: { grid: { color: '#F0EEE9' }, ticks: { font: { family: 'DM Mono', size: 10 }, color: '#888', callback: v => 'R$' + (v/1000).toFixed(0) + 'k' } }
+  },
+  ...extra
+});
+
+// ===================== PAINEL 1 — DRE =====================
+function filtrarDRE(trim, btn) {
+  filtDRE = trim;
+  document.querySelectorAll('#painel-dre .filtro-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  renderDRE();
+}
+
+function renderDRE() {
+  const d = filtDRE === 'todos' ? dadosDRE : dadosDRE.filter(r => r.trim === filtDRE);
+  const labels = d.map(r => r.mes);
+
+  // KPIs
+  document.getElementById('kpi-receita').textContent = fmtR(soma(d,'receita'));
+  document.getElementById('kpi-lucro').textContent = fmtR(soma(d,'lucro'));
+  document.getElementById('kpi-ebitda').textContent = fmtR(soma(d,'ebitda'));
+  document.getElementById('kpi-margem').textContent = fmtPct(media(d,'margem'));
+
+  // Barras
+  destroyChart('dre-barras');
+  charts['dre-barras'] = new Chart(document.getElementById('chart-dre-barras'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'Receita Total', data: d.map(r=>r.receita), backgroundColor: cores.azul, borderRadius: 4, borderSkipped: false },
+        { label:'Lucro Líquido', data: d.map(r=>r.lucro), backgroundColor: cores.verde, borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: { ...baseOpts(), plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx => ' '+fmtR(ctx.raw)}} } }
+  });
+
+  // Rosca custos — filtrar só custos/despesas
+  const contasCusto = ['CPV / CMV','Despesas Administrativas','Despesas Comerciais','Outras Despesas','Depreciação e Amortização','Despesas Financeiras'];
+  const valoresCusto = [
+    d.reduce((s,r)=>s+(r.receita*0.42),0),
+    d.reduce((s,r)=>s+(r.receita*0.12),0),
+    d.reduce((s,r)=>s+(r.receita*0.08),0),
+    d.reduce((s,r)=>s+(r.receita*0.03),0),
+    d.reduce((s,r)=>s+(r.receita*0.03),0),
+    d.reduce((s,r)=>s+(r.receita*0.025),0),
+  ];
+  destroyChart('dre-rosca');
+  charts['dre-rosca'] = new Chart(document.getElementById('chart-dre-rosca'), {
+    type: 'doughnut',
+    data: {
+      labels: contasCusto,
+      datasets: [{ data: valoresCusto, backgroundColor: ['#185FA5','#1D9E75','#EF9F27','#E24B4A','#888780','#B5D4F4'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10,family:'DM Sans'},boxWidth:10,padding:8}},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  // Linha margem
+  destroyChart('dre-margem');
+  charts['dre-margem'] = new Chart(document.getElementById('chart-dre-margem'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Margem Líquida', data: d.map(r=>+(r.margem*100).toFixed(2)), borderColor: cores.azul, backgroundColor: cores.azulA, fill:true, tension:0.4, pointBackgroundColor: cores.azul, pointRadius:4 },
+        { label:'Meta 20%', data: d.map(()=>20), borderColor:'#ccc', borderDash:[4,4], pointRadius:0, fill:false }
+      ]
+    },
+    options: { ...baseOpts(), scales: {
+      x: { grid:{display:false}, ticks:{font:{family:'DM Sans',size:11},color:'#888'} },
+      y: { grid:{color:'#F0EEE9'}, min:19, ticks:{font:{family:'DM Mono',size:10},color:'#888',callback:v=>v.toFixed(1)+'%'} }
+    }, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw.toFixed(1)+'%'}}} }
+  });
+}
+
+// ===================== PAINEL 2 — FLUXO =====================
+function filtrarFluxo(trim, btn) {
+  filtFluxo = trim;
+  document.querySelectorAll('#painel-fluxo .filtro-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  renderFluxo();
+}
+
+function renderFluxo() {
+  const d = filtFluxo === 'todos' ? dadosFluxo : dadosFluxo.filter(r => r.trim === filtFluxo);
+  const labels = d.map(r => r.mes);
+
+  document.getElementById('kpi-saldo').textContent = fmtR(d[d.length-1].saldo);
+  document.getElementById('kpi-receb').textContent = fmtR(soma(d,'receb'));
+  document.getElementById('kpi-fluxoop').textContent = fmtR(soma(d,'fluxoOp'));
+  document.getElementById('kpi-variacao').textContent = fmtR(soma(d,'variacao'));
+
+  // Barras agrupadas
+  destroyChart('fluxo-barras');
+  charts['fluxo-barras'] = new Chart(document.getElementById('chart-fluxo-barras'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'Recebimentos', data:d.map(r=>r.receb), backgroundColor:cores.verde, borderRadius:4 },
+        { label:'Fluxo Op.', data:d.map(r=>r.fluxoOp), backgroundColor:cores.vermelho, borderRadius:4 }
+      ]
+    },
+    options: { ...baseOpts(), plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  // Área saldo
+  destroyChart('fluxo-area');
+  charts['fluxo-area'] = new Chart(document.getElementById('chart-fluxo-area'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label:'Saldo Final', data:d.map(r=>r.saldo), borderColor:cores.azul, backgroundColor:'rgba(24,95,165,0.1)', fill:true, tension:0.4, pointBackgroundColor:cores.azul, pointRadius:4 }]
+    },
+    options: { ...baseOpts(), plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  // Waterfall
+  const container = document.getElementById('waterfall-container');
+  const maxV = Math.max(...d.map(r=>Math.abs(r.variacao)));
+  container.innerHTML = d.map(r => {
+    const h = Math.round((Math.abs(r.variacao)/maxV)*160);
+    const cor = r.variacao >= 0 ? cores.verde : cores.vermelho;
+    const mesAbrev = r.mes.substring(0,3);
+    return `<div class="wf-col">
+      <div class="wf-bar" style="height:${h}px;background:${cor};width:85%"></div>
+      <div class="wf-label">${mesAbrev}<br>${(r.variacao/1000).toFixed(0)}k</div>
+    </div>`;
+  }).join('');
+}
+
+// ===================== PAINEL 3 — COMPARATIVO =====================
+function filtrarComp(trim, btn) {
+  filtComp = trim;
+  document.querySelectorAll('#painel-comparativo .filtro-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  renderComp();
+}
+
+function renderComp() {
+  const d = filtComp === 'todos' ? dadosComp : dadosComp.filter(r => r.trim === filtComp);
+  const labels = d.map(r => r.mes);
+
+  document.getElementById('kpi-comp-receita').textContent = fmtR(soma(d,'recBruta'));
+  document.getElementById('kpi-comp-margem').textContent = fmtPct(media(d,'margLiq'));
+
+  // Linhas 3 séries
+  destroyChart('comp-linhas');
+  charts['comp-linhas'] = new Chart(document.getElementById('chart-comp-linhas'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Receita Líquida', data:d.map(r=>r.recLiq), borderColor:cores.azul, tension:0.4, pointRadius:3, fill:false },
+        { label:'Lucro Bruto', data:d.map(r=>r.lucroBruto), borderColor:cores.verde, tension:0.4, pointRadius:3, fill:false },
+        { label:'EBITDA', data:d.map(r=>r.ebitda), borderColor:cores.ambar, tension:0.4, pointRadius:3, fill:false }
+      ]
+    },
+    options: { ...baseOpts(), plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  // Barras margens
+  destroyChart('comp-margens');
+  charts['comp-margens'] = new Chart(document.getElementById('chart-comp-margens'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'Margem Bruta', data:d.map(r=>+(r.margBruta*100).toFixed(1)), backgroundColor:cores.verde, borderRadius:4 },
+        { label:'Margem Líquida', data:d.map(r=>+(r.margLiq*100).toFixed(1)), backgroundColor:cores.azul, borderRadius:4 }
+      ]
+    },
+    options: { ...baseOpts(), scales: {
+      x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:11},color:'#888'}},
+      y:{grid:{color:'#F0EEE9'},ticks:{font:{family:'DM Mono',size:10},color:'#888',callback:v=>v+'%'}}
+    }, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw.toFixed(1)+'%'}}} }
+  });
+
+  // Rosca trimestres (sempre anual)
+  const trims = ['Q1','Q2','Q3','Q4'];
+  const coresTrim = [cores.azul, cores.verde, cores.ambar, cores.vermelho];
+  const valTrim = trims.map(t => soma(dadosComp.filter(r=>r.trim===t),'recBruta'));
+  const totalTrim = soma(dadosComp,'recBruta');
+
+  destroyChart('comp-rosca');
+  charts['comp-rosca'] = new Chart(document.getElementById('chart-comp-rosca'), {
+    type: 'doughnut',
+    data: { labels:trims, datasets:[{ data:valTrim, backgroundColor:coresTrim, borderWidth:2, borderColor:'#fff' }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  document.getElementById('trimestre-legenda').innerHTML = trims.map((t,i) => `
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:12px;height:12px;border-radius:50%;background:${coresTrim[i]};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:var(--texto)">${t}</div>
+        <div style="font-size:11px;color:var(--texto-sec);font-family:'DM Mono',monospace">${fmtR(valTrim[i])} · ${(valTrim[i]/totalTrim*100).toFixed(1)}%</div>
+      </div>
+    </div>`).join('');
+}
+
+// ===================== PAINEL 4 — INADIMPLÊNCIA =====================
+function filtrarInad(val, tipo, btn) {
+  if (tipo === 'resp') {
+    filtInadResp = val;
+    document.querySelectorAll('#painel-inadimplencia .painel-header .filtro-btn').forEach(b=>b.classList.remove('ativo'));
+  } else {
+    filtInadFaixa = val;
+    const faixaBtns = document.querySelectorAll('#painel-inadimplencia .filtros:nth-of-type(2) .filtro-btn');
+    faixaBtns.forEach(b=>b.classList.remove('ativo'));
+  }
+  btn.classList.add('ativo');
+  renderInad();
+}
+
+function limparFiltrosInad() {
+  filtInadResp = 'todos'; filtInadFaixa = 'todos';
+  document.querySelectorAll('#painel-inadimplencia .filtro-btn').forEach(b=>b.classList.remove('ativo'));
+  document.querySelectorAll('#painel-inadimplencia .filtro-btn:first-of-type').forEach(b=>b.classList.add('ativo'));
+  renderInad();
+}
+
+function getInadFiltrado() {
+  return inadimplencia.filter(r =>
+    (filtInadResp === 'todos' || r.resp === filtInadResp) &&
+    (filtInadFaixa === 'todos' || r.faixa === filtInadFaixa)
+  );
+}
+
+function badgeStatus(s) {
+  const m = {
+    'Acao Judicial':'badge-judicial','Negociacao':'badge-negociacao',
+    'Cobranca Amigavel':'badge-amigavel','Aviso de Vencimento':'badge-aviso','Cobranca Juridica':'badge-juridica'
+  };
+  const txt = {'Acao Judicial':'Ação Judicial','Negociacao':'Negociação','Cobranca Amigavel':'Cob. Amigável','Aviso de Vencimento':'Aviso','Cobranca Juridica':'Cob. Jurídica'};
+  return `<span class="badge ${m[s]||''}">${txt[s]||s}</span>`;
+}
+
+function renderInad() {
+  const d = getInadFiltrado();
+  const total = soma(d,'valor');
+  const judicial = soma(d.filter(r=>r.status==='Acao Judicial'),'valor');
+  const negoc = soma(d.filter(r=>r.status==='Negociacao'),'valor');
+  const mais90 = soma(d.filter(r=>r.faixa==='Acima 90 dias'),'valor');
+
+  document.getElementById('kpi-inad-total').textContent = fmtR(total);
+  document.getElementById('kpi-inad-count').textContent = d.length + ' cliente' + (d.length!==1?'s':'');
+  document.getElementById('kpi-inad-judicial').textContent = fmtR(judicial);
+  document.getElementById('kpi-inad-negoc').textContent = fmtR(negoc);
+  document.getElementById('kpi-inad-90').textContent = fmtR(mais90);
+
+  // Barras horizontais por faixa
+  const faixas = ['Acima 90 dias','61-90 dias','31-60 dias','16-30 dias','1-15 dias'];
+  const coresFaixa = [cores.vermelho,cores.ambar,'#EF9F27','#888780',cores.verde];
+  const container = document.getElementById('barras-horizontais');
+  const maxFaixa = Math.max(...faixas.map(f=>soma(d.filter(r=>r.faixa===f),'valor')));
+
+  container.innerHTML = faixas.map((f,i) => {
+    const v = soma(d.filter(r=>r.faixa===f),'valor');
+    const pct = maxFaixa > 0 ? (v/maxFaixa*100).toFixed(0) : 0;
+    return `<div>
+      <div style="font-size:11px;color:var(--texto-sec);margin-bottom:4px;font-weight:500">${f}</div>
+      <div class="barra-wrap">
+        <div class="barra"><div class="barra-fill" style="width:${pct}%;background:${coresFaixa[i]}"></div></div>
+        <div class="barra-txt" style="color:${coresFaixa[i]}">${fmtR(v)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Rosca status
+  const statusList = ['Negociacao','Cobranca Juridica','Acao Judicial','Cobranca Amigavel','Aviso de Vencimento'];
+  const statusTxt = ['Negociação','Cob. Jurídica','Ação Judicial','Cob. Amigável','Aviso'];
+  const statusCores = [cores.ambar,'#8B5CF6',cores.vermelho,'#888780',cores.verde];
+  const statusVals = statusList.map(s => soma(d.filter(r=>r.status===s),'valor'));
+
+  destroyChart('inad-rosca');
+  charts['inad-rosca'] = new Chart(document.getElementById('chart-inad-rosca'), {
+    type: 'doughnut',
+    data: { labels:statusTxt, datasets:[{ data:statusVals, backgroundColor:statusCores, borderWidth:2, borderColor:'#fff' }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10,family:'DM Sans'},boxWidth:10,padding:6}},tooltip:{callbacks:{label:ctx=>' '+fmtR(ctx.raw)}}} }
+  });
+
+  // Tabela
+  const tbody = document.getElementById('tabela-inad');
+  const sorted = [...d].sort((a,b)=>b.valor-a.valor);
+  tbody.innerHTML = sorted.map(r => `<tr>
+    <td style="font-weight:500">${r.cliente}</td>
+    <td class="${r.valor>=10000?'valor-alto':r.valor>=5000?'valor-med':''}" style="font-family:'DM Mono',monospace">${fmtR(r.valor)}</td>
+    <td style="font-family:'DM Mono',monospace">${r.dias} dias</td>
+    <td style="font-size:12px;color:var(--texto-sec)">${r.faixa}</td>
+    <td>${badgeStatus(r.status)}</td>
+    <td style="color:var(--texto-sec)">${r.resp}</td>
+  </tr>`).join('');
+}
+
+// ===================== INIT =====================
+function updateTime() {
+  document.getElementById('update-time').textContent = 'Atualizado: ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateTime();
+  renderDRE();
+  renderFluxo();
+  renderComp();
+  renderInad();
+});
+</script>
+</body>
+</html>
